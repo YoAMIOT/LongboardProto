@@ -22,7 +22,7 @@ transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 10, 0, 0, 0)
 shape = SubResource("BoxShape3D_jlno0")
 
 [node name="VehicleBody3D" parent="." instance=ExtResource("1_5fh8e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.641383, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.838796, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.781499, 0.623907, 0, -0.623907, 0.781499, 0, 11.9132, 0)
