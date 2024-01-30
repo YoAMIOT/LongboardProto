@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 public partial class Longboard : VehicleBody3D{
-	private const int MAX_STEER = 10;
+	private const float MAX_STEER = 0.3f;
 	private const float ENGINE_POWER = 3;
 	private Node3D CameraPivot;
 	private Camera3D Camera;
