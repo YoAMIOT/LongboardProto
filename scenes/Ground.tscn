@@ -1,15 +1,29 @@
-[gd_scene load_steps=3 format=3 uid="uid://cmowh0pcwm3j7"]
+[gd_scene load_steps=5 format=3 uid="uid://cmowh0pcwm3j7"]
 
 [ext_resource type="PackedScene" uid="uid://d3vbnmquou572" path="res://scenes/Longboard.tscn" id="1_5fh8e"]
 [ext_resource type="PackedScene" uid="uid://ptt1re4t7ht1" path="res://scenes/track1.tscn" id="2_licif"]
 
-[node name="StaticBody3D" type="StaticBody3D"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_7m6d0"]
 
-[node name="VehicleBody3D" parent="." instance=ExtResource("1_5fh8e")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 1.01672, 0)
+[sub_resource type="BoxMesh" id="BoxMesh_jvw2d"]
+
+[node name="Node3D" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.781499, 0.623907, 0, -0.623907, 0.781499, 0, 11.9132, 0)
 
+[node name="VehicleBody3D" parent="." instance=ExtResource("1_5fh8e")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 1.01672, 0)
+
 [node name="Track" parent="." instance=ExtResource("2_licif")]
 transform = Transform3D(0.15, 0, 0, 0, 0.03, 0, 0, 0, 0.15, 16.2942, 0, 33.0372)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(100, 0, 0, 0, 0.01, 0, 0, 0, 100, 20, 0, 0)
+shape = SubResource("BoxShape3D_7m6d0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+transform = Transform3D(100, 0, 0, 0, 0.01, 0, 0, 0, 100, 20, 0, 0)
+mesh = SubResource("BoxMesh_jvw2d")

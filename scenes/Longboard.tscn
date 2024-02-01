@@ -38,13 +38,13 @@ top_level = true
 transform = Transform3D(1.19249e-08, 0.173648, -0.984808, 0, 0.984808, 0.173648, 1, -2.07073e-09, 1.17437e-08, -1.05009, 0.320801, 0)
 
 [node name="FrontRight" type="VehicleWheel3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.4, -0.06, 0.13)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.52, -0.06, 0.13)
 use_as_traction = true
 use_as_steering = true
 wheel_roll_influence = 0.0
 wheel_radius = 0.05
 wheel_rest_length = 0.02
-wheel_friction_slip = 1.2
+wheel_friction_slip = 2.0
 suspension_travel = 0.02
 suspension_stiffness = 200.0
 damping_compression = 10.0
@@ -57,13 +57,13 @@ skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_s85ft")
 
 [node name="FrontLeft" type="VehicleWheel3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.4, -0.06, -0.13)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.52, -0.06, -0.13)
 use_as_traction = true
 use_as_steering = true
 wheel_roll_influence = 0.0
 wheel_radius = 0.05
 wheel_rest_length = 0.02
-wheel_friction_slip = 1.2
+wheel_friction_slip = 2.0
 suspension_travel = 0.02
 suspension_stiffness = 200.0
 damping_compression = 10.0
@@ -77,10 +77,11 @@ surface_material_override/0 = SubResource("StandardMaterial3D_s85ft")
 
 [node name="BackLeft" type="VehicleWheel3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.4, -0.06, -0.13)
+use_as_traction = true
 wheel_roll_influence = 0.0
 wheel_radius = 0.05
 wheel_rest_length = 0.02
-wheel_friction_slip = 1.2
+wheel_friction_slip = 2.0
 suspension_travel = 0.02
 suspension_stiffness = 200.0
 damping_compression = 10.0
@@ -94,10 +95,11 @@ surface_material_override/0 = SubResource("StandardMaterial3D_s85ft")
 
 [node name="BackRight" type="VehicleWheel3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.4, -0.06, 0.13)
+use_as_traction = true
 wheel_roll_influence = 0.0
 wheel_radius = 0.05
 wheel_rest_length = 0.02
-wheel_friction_slip = 1.2
+wheel_friction_slip = 2.0
 suspension_travel = 0.02
 suspension_stiffness = 200.0
 damping_compression = 10.0

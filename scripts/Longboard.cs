@@ -2,8 +2,8 @@ using Godot;
 using System;
 
 public partial class Longboard : VehicleBody3D{
-	private const float MAX_STEER = 0.21f;
-	private const float MAX_BOARD_ANGLE = MAX_STEER * 2;
+	private const float MAX_STEER_ANGLE= 0.21f;
+	private const float MAX_BOARD_ANGLE = MAX_STEER_ANGLE * 2;
 	private const float ENGINE_POWER = 8;
 	private const float BRAKE_POWER = 0.05f;
 	private Node3D CameraPivot;
@@ -32,23 +32,13 @@ public partial class Longboard : VehicleBody3D{
 	}
 
 	public override void _PhysicsProcess(double delta){
-		float STEERING_SPEED = (float)delta * 0.8f;
-		float currentSteering = (float)Mathf.MoveToward(FrontRightWheel.Steering, Input.GetAxis("Right","Left") * MAX_STEER, STEERING_SPEED);
-		FrontLeftWheel.Steering = currentSteering;
-		FrontRightWheel.Steering = currentSteering;
-		BackLeftWheel.Steering = currentSteering * -1;
-		BackRightWheel.Steering = currentSteering * -1;
-		float BoardRotation =  (float)Mathf.MoveToward(Board.Rotation.X, Input.GetAxis("Left","Right") * MAX_BOARD_ANGLE, STEERING_SPEED * 2);
-		Board.Rotation = new Vector3(BoardRotation, 0, 0);
-		
-		//RacingGame camera (Does not support reverse)
-		CameraPivot.GlobalPosition = CameraPivot.GlobalPosition.Lerp(this.GlobalPosition, (float)delta * 20);
-		CameraPivot.Transform = CameraPivot.Transform.InterpolateWith(this.Transform, (float)delta * 6);
-		CameraLookAt = CameraLookAt.Lerp(this.GlobalPosition + this.LinearVelocity, (float)delta * 6);
-		Camera.LookAt(CameraLookAt);
+		//Calculate speed
+		Vector3 currentVelocity = this.LinearVelocity * this.Transform.Basis;
+		int speed = (int)(currentVelocity.Length() * 3.6);
+		Speedometer.Text = (speed).ToString() + " Km/h";
 
 		//Thrust management
-		if (ThrustCooldown.TimeLeft > 1f && Input.IsActionPressed("Forward")){
+		if (ThrustCooldown.TimeLeft > 1f && Input.IsActionPressed("Forward") && speed < 25){
 			this.EngineForce = ENGINE_POWER;
 			GetNode<MeshInstance3D>("Cap").Visible = true;
 		} else {
@@ -62,9 +52,20 @@ public partial class Longboard : VehicleBody3D{
 			this.Brake = 0;
 		}
 
-
-		Vector3 currentVelocity = this.LinearVelocity * this.Transform.Basis;
+		//Steering
+		float STEERING_SPEED = (float)delta * 0.4f;
+		float currentSteering = (float)Mathf.MoveToward(FrontRightWheel.Steering, Input.GetAxis("Right","Left") * MAX_STEER_ANGLE, STEERING_SPEED);
+		FrontLeftWheel.Steering = currentSteering;
+		FrontRightWheel.Steering = currentSteering;
+		BackLeftWheel.Steering = currentSteering * -1;
+		BackRightWheel.Steering = currentSteering * -1;
+		float BoardRotation =  (float)Mathf.MoveToward(Board.Rotation.X, Input.GetAxis("Left","Right") * MAX_BOARD_ANGLE, STEERING_SPEED * 2);
+		Board.Rotation = new Vector3(BoardRotation, 0, 0);
 		
-		Speedometer.Text = ((int)(currentVelocity.Length() * 3.6)).ToString() + " Km/h";
+		//RacingGame camera (Does not support reverse)
+		CameraPivot.GlobalPosition = CameraPivot.GlobalPosition.Lerp(this.GlobalPosition, (float)delta * 20);
+		CameraPivot.Transform = CameraPivot.Transform.InterpolateWith(this.Transform, (float)delta * 6);
+		CameraLookAt = CameraLookAt.Lerp(this.GlobalPosition + this.LinearVelocity, (float)delta * 6);
+		Camera.LookAt(CameraLookAt);
 	}
 }
