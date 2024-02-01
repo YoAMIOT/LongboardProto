@@ -2,7 +2,8 @@ using Godot;
 using System;
 
 public partial class Longboard : VehicleBody3D{
-	private const float MAX_STEER = 0.2f;
+	private const float MAX_STEER = 0.21f;
+	private const float MAX_BOARD_ANGLE = MAX_STEER * 2;
 	private const float ENGINE_POWER = 10;
 	private const float BRAKE_POWER = 0.08f;
 	private Node3D CameraPivot;
@@ -30,12 +31,14 @@ public partial class Longboard : VehicleBody3D{
 
 	public override void _PhysicsProcess(double delta){
 		float STEERING_SPEED = (float)delta * 0.8f;
-		FrontRightWheel.Steering = (float)Mathf.MoveToward(FrontRightWheel.Steering, Input.GetAxis("Right","Left") * MAX_STEER, STEERING_SPEED);
-		FrontLeftWheel.Steering = (float)Mathf.MoveToward(FrontLeftWheel.Steering, Input.GetAxis("Right","Left") * MAX_STEER, STEERING_SPEED);
-		BackRightWheel.Steering = (float)Mathf.MoveToward(BackRightWheel.Steering, Input.GetAxis("Left","Right") * MAX_STEER, STEERING_SPEED);
-		BackLeftWheel.Steering = (float)Mathf.MoveToward(BackLeftWheel.Steering, Input.GetAxis("Left","Right") * MAX_STEER, STEERING_SPEED);
-		float BoardRotation =  (float)Mathf.MoveToward(Board.Rotation.X, Input.GetAxis("Left","Right") * MAX_STEER, STEERING_SPEED);
+		float currentSteering = (float)Mathf.MoveToward(FrontRightWheel.Steering, Input.GetAxis("Right","Left") * MAX_STEER, STEERING_SPEED);
+		FrontLeftWheel.Steering = currentSteering;
+		FrontRightWheel.Steering = currentSteering;
+		BackLeftWheel.Steering = currentSteering * -1;
+		BackRightWheel.Steering = currentSteering * -1;
+		float BoardRotation =  (float)Mathf.MoveToward(Board.Rotation.X, Input.GetAxis("Left","Right") * MAX_BOARD_ANGLE, STEERING_SPEED * 2);
 		Board.Rotation = new Vector3(BoardRotation, 0, 0);
+		
 		//RacingGame camera (Does not support reverse)
 		CameraPivot.GlobalPosition = CameraPivot.GlobalPosition.Lerp(this.GlobalPosition, (float)delta * 20);
 		CameraPivot.Transform = CameraPivot.Transform.InterpolateWith(this.Transform, (float)delta * 6);
