@@ -118,3 +118,21 @@ transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.0889585, 0)
 visible = false
 mesh = SubResource("CapsuleMesh_w58ol")
 skeleton = NodePath("../ThrustCooldown")
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Speedometer" type="Label" parent="HUD"]
+layout_mode = 0
+offset_left = 927.0
+offset_top = 575.0
+offset_right = 1010.0
+offset_bottom = 598.0
+scale = Vector2(2, 2)
+text = "999 Km/h"
+horizontal_alignment = 2

@@ -4,8 +4,8 @@ using System;
 public partial class Longboard : VehicleBody3D{
 	private const float MAX_STEER = 0.21f;
 	private const float MAX_BOARD_ANGLE = MAX_STEER * 2;
-	private const float ENGINE_POWER = 10;
-	private const float BRAKE_POWER = 0.08f;
+	private const float ENGINE_POWER = 8;
+	private const float BRAKE_POWER = 0.05f;
 	private Node3D CameraPivot;
 	private Camera3D Camera;
 	private VehicleWheel3D FrontRightWheel;
@@ -15,6 +15,7 @@ public partial class Longboard : VehicleBody3D{
 	private MeshInstance3D Board;
 	private Timer ThrustCooldown;
 	private Vector3 CameraLookAt;
+	private Label Speedometer;
 
 	public override void _Ready(){
 		Input.MouseMode = Input.MouseModeEnum.Captured;
@@ -26,6 +27,7 @@ public partial class Longboard : VehicleBody3D{
 		BackLeftWheel = GetNode<VehicleWheel3D>("BackLeft");
 		Board = GetNode<MeshInstance3D>("Board");
 		ThrustCooldown = GetNode<Timer>("ThrustCooldown");
+		Speedometer = GetNode<Label>("HUD/Speedometer");
 		CameraLookAt = this.GlobalPosition;
 	}
 
@@ -59,5 +61,10 @@ public partial class Longboard : VehicleBody3D{
 		} else {
 			this.Brake = 0;
 		}
+
+
+		Vector3 currentVelocity = this.LinearVelocity * this.Transform.Basis;
+		
+		Speedometer.Text = ((int)(currentVelocity.Length() * 3.6)).ToString() + " Km/h";
 	}
 }
