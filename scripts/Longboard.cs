@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 public partial class Longboard : VehicleBody3D{
-	private const float MAX_STEER_ANGLE= 0.21f;
+	private const float MAX_STEER_ANGLE= 0.1f;
 	private const float MAX_BOARD_ANGLE = MAX_STEER_ANGLE * 2;
 	private const float ENGINE_POWER = 8;
 	private const float BRAKE_POWER = 0.05f;
