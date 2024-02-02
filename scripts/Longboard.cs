@@ -4,9 +4,10 @@ using System;
 public partial class Longboard : VehicleBody3D{
 	private const float MAX_STEER_ANGLE= 0.08f;
 	private const float MAX_BOARD_ANGLE = MAX_STEER_ANGLE * 2;
-	private const float ENGINE_POWER = 8;
+	private const float ENGINE_POWER = 5;
 	private const float BRAKE_POWER = 0.05f;
 	private const int MAX_THRUSTING_SPEED = 16;
+	private const int MAX_THRUST_STAMINA = 8;
 	private Node3D CameraPivotH;
 	private Node3D CameraPivotV;
 	private Camera3D Camera;
@@ -17,12 +18,15 @@ public partial class Longboard : VehicleBody3D{
 	private MeshInstance3D Board;
 	private Timer ThrustCooldown;
 	private Vector3 CameraLookAt;
+	private Timer RecenterCameraTimer;
 	private Label Speedometer;
+	private Timer StaminaCooldown;
 	private float MouseSensivity = 0.05f;
 	private int minPitch = -50;
 	private int maxPitch = 30;
-	private Timer RecenterCameraTimer;
 	private bool recenterCamera = false;
+	private int thrustStamina = MAX_THRUST_STAMINA;
+	private bool canThrust = true;
 
 	public override void _Ready(){
 		Input.MouseMode = Input.MouseModeEnum.Captured;
@@ -34,8 +38,11 @@ public partial class Longboard : VehicleBody3D{
 		BackLeftWheel = GetNode<VehicleWheel3D>("BackLeft");
 		Board = GetNode<MeshInstance3D>("Board");
 		ThrustCooldown = GetNode<Timer>("ThrustCooldown");
+		ThrustCooldown.Timeout += resetThrustCapability;
 		Speedometer = GetNode<Label>("HUD/Speedometer");
 		RecenterCameraTimer = GetNode<Timer>("ReCenterCamera");
+		StaminaCooldown = GetNode<Timer>("StaminaCooldown");
+		StaminaCooldown.Timeout += StaminaReload;
 		RecenterCameraTimer.Timeout += TiggerRecenterCamera;
 		CameraLookAt = this.GlobalPosition;
 	}
@@ -57,14 +64,19 @@ public partial class Longboard : VehicleBody3D{
 		Speedometer.Text = (speed).ToString() + " Km/h";
 
 		//Thrust management
-		if (ThrustCooldown.TimeLeft > 1f && Input.IsActionPressed("Forward") && speed < MAX_THRUSTING_SPEED){
-			this.EngineForce = ENGINE_POWER;
-			GetNode<MeshInstance3D>("Cap").Visible = true;
+		if (Input.IsActionPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && thrustStamina > 0){
+			ThrustCooldown.Start();
+			thrustStamina -= 1;
+			StaminaCooldown.Start();
+			canThrust = false;
 		} else {
 			this.EngineForce = 0;
-			GetNode<MeshInstance3D>("Cap").Visible = false;
 		}
-		
+		if (ThrustCooldown.TimeLeft > 1 && speed < MAX_THRUSTING_SPEED){
+			this.EngineForce = ENGINE_POWER;
+		}
+
+		//Brake management
 		if (Input.IsActionPressed("Backward") && !Input.IsActionPressed("Forward")){
 			this.Brake = BRAKE_POWER;
 		} else {
@@ -101,7 +113,20 @@ public partial class Longboard : VehicleBody3D{
 			}
 	}
 
+	private void StaminaReload(){
+		if (thrustStamina < MAX_THRUST_STAMINA){
+			thrustStamina += 1;
+		}
+		if (thrustStamina < MAX_THRUST_STAMINA){
+			StaminaCooldown.Start();
+		}
+	}
+
 	private void TiggerRecenterCamera(){
 		recenterCamera = true;
+	}
+
+	private void resetThrustCapability(){
+		canThrust = true;
 	}
 }
