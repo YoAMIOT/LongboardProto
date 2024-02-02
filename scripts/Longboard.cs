@@ -2,11 +2,12 @@ using Godot;
 using System;
 
 public partial class Longboard : VehicleBody3D{
-	private const float MAX_STEER_ANGLE= 0.1f;
+	private const float MAX_STEER_ANGLE= 0.08f;
 	private const float MAX_BOARD_ANGLE = MAX_STEER_ANGLE * 2;
 	private const float ENGINE_POWER = 8;
 	private const float BRAKE_POWER = 0.05f;
-	private Node3D CameraPivot;
+	private Node3D CameraPivotH;
+	private Node3D CameraPivotV;
 	private Camera3D Camera;
 	private VehicleWheel3D FrontRightWheel;
 	private VehicleWheel3D FrontLeftWheel;
@@ -16,11 +17,17 @@ public partial class Longboard : VehicleBody3D{
 	private Timer ThrustCooldown;
 	private Vector3 CameraLookAt;
 	private Label Speedometer;
+	private float MouseSensivity = 0.05f;
+	private int minPitch = -90;
+	private int maxPitch = 90;
+	private Timer RecenterCameraTimer;
+	private bool recenterCamera = false;
 
 	public override void _Ready(){
 		Input.MouseMode = Input.MouseModeEnum.Captured;
-		CameraPivot = GetNode<Node3D>("CameraPivot");
-		Camera = GetNode<Camera3D>("CameraPivot/Camera3D");
+		CameraPivotH = GetNode<Node3D>("CameraPivotH");
+		CameraPivotV = GetNode<Node3D>("CameraPivotH/CameraPivotV/");
+		Camera = GetNode<Camera3D>("CameraPivot/CameraPivotV/CameraSpringArm/Camera3D");
 		FrontRightWheel = GetNode<VehicleWheel3D>("FrontRight");
 		FrontLeftWheel = GetNode<VehicleWheel3D>("FrontLeft");
 		BackRightWheel = GetNode<VehicleWheel3D>("BackRight");
@@ -28,10 +35,23 @@ public partial class Longboard : VehicleBody3D{
 		Board = GetNode<MeshInstance3D>("Board");
 		ThrustCooldown = GetNode<Timer>("ThrustCooldown");
 		Speedometer = GetNode<Label>("HUD/Speedometer");
+		RecenterCameraTimer = GetNode<Timer>("ReCenterCamera");
+		RecenterCameraTimer.Timeout += TiggerRecenterCamera;
 		CameraLookAt = this.GlobalPosition;
 	}
 
-	public override void _PhysicsProcess(double delta){
+    public override void _Input(InputEvent @event){
+        //base._Input(@event);
+		if(@event is InputEventMouseMotion mouseMotion){
+			CameraPivotH.RotateY(-Mathf.DegToRad(mouseMotion.Relative.X) * MouseSensivity);
+			//CLAMP ROTATION BETWEEN PITCH
+			CameraPivotV.RotateZ(-Mathf.DegToRad(mouseMotion.Relative.Y) * MouseSensivity);
+			RecenterCameraTimer.WaitTime = 0.7f;
+			RecenterCameraTimer.Start();
+		}
+    }
+
+    public override void _PhysicsProcess(double delta){
 		//Calculate speed
 		Vector3 currentVelocity = this.LinearVelocity * this.Transform.Basis;
 		int speed = (int)(currentVelocity.Length() * 3.6);
@@ -61,11 +81,28 @@ public partial class Longboard : VehicleBody3D{
 		BackRightWheel.Steering = currentSteering * -1;
 		float BoardRotation =  (float)Mathf.MoveToward(Board.Rotation.X, Input.GetAxis("Left","Right") * MAX_BOARD_ANGLE, STEERING_SPEED * 2);
 		Board.Rotation = new Vector3(BoardRotation, 0, 0);
-		
-		//RacingGame camera (Does not support reverse)
-		CameraPivot.GlobalPosition = CameraPivot.GlobalPosition.Lerp(this.GlobalPosition, (float)delta * 20);
-		CameraPivot.Transform = CameraPivot.Transform.InterpolateWith(this.Transform, (float)delta * 6);
-		CameraLookAt = CameraLookAt.Lerp(this.GlobalPosition + this.LinearVelocity, (float)delta * 6);
-		Camera.LookAt(CameraLookAt);
+
+		if(recenterCamera){
+			RecenterCamera(delta);
+		}
+	}
+
+	//Manage recentering
+	private void RecenterCamera(double delta){
+		if(CameraPivotH.Rotation.Y != 0){
+				float HorizontalRotation = (float)Mathf.MoveToward(CameraPivotH.Rotation.Y, 0, delta * 8);
+				CameraPivotH.Rotation = new Vector3(0, HorizontalRotation, 0);
+			}
+			if (CameraPivotV.Rotation.Z != 0){
+				float VerticalRotation = (float)Mathf.MoveToward(CameraPivotV.Rotation.Z, 0, delta * 8);
+				CameraPivotV.Rotation = new Vector3(0, 0, VerticalRotation);
+			}
+			if (CameraPivotH.Rotation.Y == 0 && CameraPivotV.Rotation.Z == 0){
+				recenterCamera = false;
+			}
+	}
+
+	private void TiggerRecenterCamera(){
+		recenterCamera = true;
 	}
 }
