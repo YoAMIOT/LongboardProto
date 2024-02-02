@@ -136,12 +136,21 @@ grow_vertical = 2
 
 [node name="Speedometer" type="Label" parent="HUD"]
 layout_mode = 0
-offset_left = 927.0
-offset_top = 575.0
-offset_right = 1010.0
-offset_bottom = 598.0
+offset_left = 984.0
+offset_top = 592.0
+offset_right = 1064.0
+offset_bottom = 616.0
 scale = Vector2(2, 2)
 text = "999 Km/h"
 horizontal_alignment = 2
+
+[node name="StaminaLabel" type="Label" parent="HUD"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 592.0
+offset_right = 28.0
+offset_bottom = 616.0
+scale = Vector2(2, 2)
+text = "8"
 
 [connection signal="timeout" from="ReCenterCamera" to="." method="_on_re_center_camera_timeout"]

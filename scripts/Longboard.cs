@@ -21,6 +21,7 @@ public partial class Longboard : VehicleBody3D{
 	private Timer RecenterCameraTimer;
 	private Label Speedometer;
 	private Timer StaminaCooldown;
+	private Label StaminaLabel;
 	private float MouseSensivity = 0.05f;
 	private int minPitch = -50;
 	private int maxPitch = 30;
@@ -42,6 +43,7 @@ public partial class Longboard : VehicleBody3D{
 		Speedometer = GetNode<Label>("HUD/Speedometer");
 		RecenterCameraTimer = GetNode<Timer>("ReCenterCamera");
 		StaminaCooldown = GetNode<Timer>("StaminaCooldown");
+		StaminaLabel = GetNode<Label>("HUD/StaminaLabel");
 		StaminaCooldown.Timeout += StaminaReload;
 		RecenterCameraTimer.Timeout += TiggerRecenterCamera;
 		CameraLookAt = this.GlobalPosition;
@@ -66,8 +68,7 @@ public partial class Longboard : VehicleBody3D{
 		//Thrust management
 		if (Input.IsActionPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && thrustStamina > 0){
 			ThrustCooldown.Start();
-			thrustStamina -= 1;
-			StaminaCooldown.Start();
+			DecreaseStamina();
 			canThrust = false;
 		} else {
 			this.EngineForce = 0;
@@ -116,10 +117,23 @@ public partial class Longboard : VehicleBody3D{
 	private void StaminaReload(){
 		if (thrustStamina < MAX_THRUST_STAMINA){
 			thrustStamina += 1;
+			UpdateStaminaLabel();
+			if (thrustStamina < MAX_THRUST_STAMINA){
+				StaminaCooldown.Start();
+			}
 		}
-		if (thrustStamina < MAX_THRUST_STAMINA){
+	}
+
+	private void DecreaseStamina(){
+		if (thrustStamina > 0){
+			thrustStamina -= 1;
+			UpdateStaminaLabel();
 			StaminaCooldown.Start();
 		}
+	}
+
+	private void UpdateStaminaLabel(){
+		StaminaLabel.Text = thrustStamina.ToString();
 	}
 
 	private void TiggerRecenterCamera(){
