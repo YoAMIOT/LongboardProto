@@ -6,6 +6,7 @@ public partial class Longboard : VehicleBody3D{
 	private const float MAX_BOARD_ANGLE = MAX_STEER_ANGLE * 2;
 	private const float ENGINE_POWER = 8;
 	private const float BRAKE_POWER = 0.05f;
+	private const int MAX_THRUSTING_SPEED = 16;
 	private Node3D CameraPivotH;
 	private Node3D CameraPivotV;
 	private Camera3D Camera;
@@ -18,8 +19,8 @@ public partial class Longboard : VehicleBody3D{
 	private Vector3 CameraLookAt;
 	private Label Speedometer;
 	private float MouseSensivity = 0.05f;
-	private int minPitch = -90;
-	private int maxPitch = 90;
+	private int minPitch = -50;
+	private int maxPitch = 30;
 	private Timer RecenterCameraTimer;
 	private bool recenterCamera = false;
 
@@ -27,7 +28,6 @@ public partial class Longboard : VehicleBody3D{
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 		CameraPivotH = GetNode<Node3D>("CameraPivotH");
 		CameraPivotV = GetNode<Node3D>("CameraPivotH/CameraPivotV/");
-		Camera = GetNode<Camera3D>("CameraPivot/CameraPivotV/CameraSpringArm/Camera3D");
 		FrontRightWheel = GetNode<VehicleWheel3D>("FrontRight");
 		FrontLeftWheel = GetNode<VehicleWheel3D>("FrontLeft");
 		BackRightWheel = GetNode<VehicleWheel3D>("BackRight");
@@ -41,11 +41,10 @@ public partial class Longboard : VehicleBody3D{
 	}
 
     public override void _Input(InputEvent @event){
-        //base._Input(@event);
 		if(@event is InputEventMouseMotion mouseMotion){
 			CameraPivotH.RotateY(-Mathf.DegToRad(mouseMotion.Relative.X) * MouseSensivity);
-			//CLAMP ROTATION BETWEEN PITCH
 			CameraPivotV.RotateZ(-Mathf.DegToRad(mouseMotion.Relative.Y) * MouseSensivity);
+			CameraPivotV.RotationDegrees = new Vector3(0, 0, Mathf.Clamp(CameraPivotV.RotationDegrees.Z, minPitch, maxPitch));
 			RecenterCameraTimer.WaitTime = 0.7f;
 			RecenterCameraTimer.Start();
 		}
@@ -58,7 +57,7 @@ public partial class Longboard : VehicleBody3D{
 		Speedometer.Text = (speed).ToString() + " Km/h";
 
 		//Thrust management
-		if (ThrustCooldown.TimeLeft > 1f && Input.IsActionPressed("Forward") && speed < 25){
+		if (ThrustCooldown.TimeLeft > 1f && Input.IsActionPressed("Forward") && speed < MAX_THRUSTING_SPEED){
 			this.EngineForce = ENGINE_POWER;
 			GetNode<MeshInstance3D>("Cap").Visible = true;
 		} else {
@@ -90,11 +89,11 @@ public partial class Longboard : VehicleBody3D{
 	//Manage recentering
 	private void RecenterCamera(double delta){
 		if(CameraPivotH.Rotation.Y != 0){
-				float HorizontalRotation = (float)Mathf.MoveToward(CameraPivotH.Rotation.Y, 0, delta * 8);
+				float HorizontalRotation = (float)Mathf.MoveToward(CameraPivotH.Rotation.Y, 0, delta * 6);
 				CameraPivotH.Rotation = new Vector3(0, HorizontalRotation, 0);
 			}
 			if (CameraPivotV.Rotation.Z != 0){
-				float VerticalRotation = (float)Mathf.MoveToward(CameraPivotV.Rotation.Z, 0, delta * 8);
+				float VerticalRotation = (float)Mathf.MoveToward(CameraPivotV.Rotation.Z, 0, delta * 6);
 				CameraPivotV.Rotation = new Vector3(0, 0, VerticalRotation);
 			}
 			if (CameraPivotH.Rotation.Y == 0 && CameraPivotV.Rotation.Z == 0){

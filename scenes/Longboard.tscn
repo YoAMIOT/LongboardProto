@@ -116,6 +116,9 @@ mesh = SubResource("CylinderMesh_314f1")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_s85ft")
 
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
 [node name="ThrustCooldown" type="Timer" parent="."]
 wait_time = 1.3
 autostart = true
