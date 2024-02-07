@@ -49,7 +49,8 @@ wheel_radius = 0.05
 wheel_rest_length = 0.02
 wheel_friction_slip = 2.0
 suspension_travel = 0.02
-suspension_stiffness = 200.0
+suspension_stiffness = 1000.0
+suspension_max_force = 12000.0
 damping_compression = 10.0
 damping_relaxation = 10.0
 
@@ -68,7 +69,8 @@ wheel_radius = 0.05
 wheel_rest_length = 0.02
 wheel_friction_slip = 2.0
 suspension_travel = 0.02
-suspension_stiffness = 200.0
+suspension_stiffness = 1000.0
+suspension_max_force = 12000.0
 damping_compression = 10.0
 damping_relaxation = 10.0
 
@@ -86,7 +88,8 @@ wheel_radius = 0.05
 wheel_rest_length = 0.02
 wheel_friction_slip = 2.0
 suspension_travel = 0.02
-suspension_stiffness = 200.0
+suspension_stiffness = 1000.0
+suspension_max_force = 12000.0
 damping_compression = 10.0
 damping_relaxation = 10.0
 
@@ -104,7 +107,8 @@ wheel_radius = 0.05
 wheel_rest_length = 0.02
 wheel_friction_slip = 2.0
 suspension_travel = 0.02
-suspension_stiffness = 200.0
+suspension_stiffness = 1000.0
+suspension_max_force = 12000.0
 damping_compression = 10.0
 damping_relaxation = 10.0
 
@@ -115,7 +119,7 @@ skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_s85ft")
 
 [node name="StaminaCooldown" type="Timer" parent="."]
-wait_time = 2.0
+wait_time = 3.0
 one_shot = true
 
 [node name="ThrustCooldown" type="Timer" parent="."]
