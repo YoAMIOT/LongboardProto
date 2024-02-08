@@ -65,6 +65,17 @@ public partial class Longboard : VehicleBody3D{
 		int speed = (int)(currentVelocity.Length() * 3.6);
 		Speedometer.Text = (speed).ToString() + " Km/h";
 
+		//Weigh Distribution
+		if (Input.IsActionPressed("Ctrl")){
+			this.CenterOfMass = new Vector3(-0.4f,0,0);
+		} else {
+			if (this.CenterOfMass != new Vector3(0,0,0)){
+				this.CenterOfMass = new Vector3(0,0,0);
+			}
+		}
+		GD.Print(this.CenterOfMass);
+
+
 		//Thrust management
 		if (Input.IsActionPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && thrustStamina > 0){
 			ThrustCooldown.Start();
@@ -83,6 +94,7 @@ public partial class Longboard : VehicleBody3D{
 		} else {
 			this.Brake = 0;
 		}
+
 
 		//Steering
 		float STEERING_SPEED = (float)delta * 0.4f;
