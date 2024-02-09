@@ -8,6 +8,8 @@ public partial class Longboard : VehicleBody3D{
 	private const float BRAKE_POWER = 0.05f;
 	private const int MAX_THRUSTING_SPEED = 16;
 	private const int MAX_THRUST_STAMINA = 8;
+	private const int FOV_MIN = 103;
+	private const int FOV_MAX = 120;
 	private Node3D CameraPivotH;
 	private Node3D CameraPivotV;
 	private Camera3D Camera;
@@ -49,6 +51,7 @@ public partial class Longboard : VehicleBody3D{
 		RecenterCameraTimer.Timeout += TiggerRecenterCamera;
 		CameraLookAt = this.GlobalPosition;
 		RayCast = GetNode<RayCast3D>("RayCast3D");
+		Camera = GetNode<Camera3D>("CameraPivotH/CameraPivotV/CameraSpringArm/Camera3D");
 	}
 
     public override void _Input(InputEvent @event){
@@ -88,7 +91,7 @@ public partial class Longboard : VehicleBody3D{
 		}
 
 		//Thrust management
-		if (Input.IsActionPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && thrustStamina > 0 && isTouchingGround){
+		if (Input.IsActionJustPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && thrustStamina > 0 && isTouchingGround){
 			ThrustCooldown.Start();
 			DecreaseStamina();
 			canThrust = false;
@@ -97,6 +100,9 @@ public partial class Longboard : VehicleBody3D{
 		}
 		if (ThrustCooldown.TimeLeft > 1 && speed < MAX_THRUSTING_SPEED && isTouchingGround){
 			this.EngineForce = ENGINE_POWER;
+			Camera.Fov = (float)Mathf.Lerp(Camera.Fov, FOV_MAX, delta * 4);
+		} else {
+			Camera.Fov = (float)Mathf.Lerp(Camera.Fov, FOV_MIN, delta * 1);
 		}
 
 		//Brake management
