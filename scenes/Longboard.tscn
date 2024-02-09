@@ -157,4 +157,7 @@ offset_bottom = 616.0
 scale = Vector2(2, 2)
 text = "8"
 
+[node name="RayCast3D" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0, 0)
+
 [connection signal="timeout" from="ReCenterCamera" to="." method="_on_re_center_camera_timeout"]

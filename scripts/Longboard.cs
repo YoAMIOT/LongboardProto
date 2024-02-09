@@ -28,6 +28,7 @@ public partial class Longboard : VehicleBody3D{
 	private bool recenterCamera = false;
 	private int thrustStamina = MAX_THRUST_STAMINA;
 	private bool canThrust = true;
+	private RayCast3D RayCast;
 
 	public override void _Ready(){
 		Input.MouseMode = Input.MouseModeEnum.Captured;
@@ -47,6 +48,7 @@ public partial class Longboard : VehicleBody3D{
 		StaminaCooldown.Timeout += StaminaReload;
 		RecenterCameraTimer.Timeout += TiggerRecenterCamera;
 		CameraLookAt = this.GlobalPosition;
+		RayCast = GetNode<RayCast3D>("RayCast3D");
 	}
 
     public override void _Input(InputEvent @event){
@@ -60,36 +62,45 @@ public partial class Longboard : VehicleBody3D{
     }
 
     public override void _PhysicsProcess(double delta){
+		bool isTouchingGround = FrontLeftWheel.IsInContact() || FrontRightWheel.IsInContact();
+		
 		//Calculate speed
 		Vector3 currentVelocity = this.LinearVelocity * this.Transform.Basis;
 		int speed = (int)(currentVelocity.Length() * 3.6);
 		Speedometer.Text = (speed).ToString() + " Km/h";
 
+		//Get distance from the ground
+		float distanceFromGround = 0f;
+		if (RayCast.IsColliding()){
+			Vector3 collisionPoint = RayCast.GetCollisionPoint();
+			distanceFromGround = RayCast.GlobalTransform.Origin.DistanceTo(collisionPoint);
+		}
+
 		//Weigh Distribution
-		if (Input.IsActionPressed("Ctrl")){
-			this.CenterOfMass = new Vector3(-0.4f,0,0);
+		if (Input.IsActionPressed("Ctrl") && distanceFromGround < 0.25f){
+			this.CenterOfMass = new Vector3(-0.6f,0,0);
+			//RotationTest
+			//this.Rotation = new Vector3(this.Rotation.X, (float)Mathf.MoveToward(this.Rotation.Y, this.Rotation.Y + 10, delta * 2), this.Rotation.Z);
 		} else {
 			if (this.CenterOfMass != new Vector3(0,0,0)){
 				this.CenterOfMass = new Vector3(0,0,0);
 			}
 		}
-		GD.Print(this.CenterOfMass);
-
 
 		//Thrust management
-		if (Input.IsActionPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && thrustStamina > 0){
+		if (Input.IsActionPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && thrustStamina > 0 && isTouchingGround){
 			ThrustCooldown.Start();
 			DecreaseStamina();
 			canThrust = false;
 		} else {
 			this.EngineForce = 0;
 		}
-		if (ThrustCooldown.TimeLeft > 1 && speed < MAX_THRUSTING_SPEED){
+		if (ThrustCooldown.TimeLeft > 1 && speed < MAX_THRUSTING_SPEED && isTouchingGround){
 			this.EngineForce = ENGINE_POWER;
 		}
 
 		//Brake management
-		if (Input.IsActionPressed("Backward") && !Input.IsActionPressed("Forward")){
+		if (Input.IsActionPressed("Backward") && !Input.IsActionPressed("Forward") && isTouchingGround){
 			this.Brake = BRAKE_POWER;
 		} else {
 			this.Brake = 0;
@@ -97,14 +108,16 @@ public partial class Longboard : VehicleBody3D{
 
 
 		//Steering
-		float STEERING_SPEED = (float)delta * 0.4f;
-		float currentSteering = (float)Mathf.MoveToward(FrontRightWheel.Steering, Input.GetAxis("Right","Left") * MAX_STEER_ANGLE, STEERING_SPEED);
-		FrontLeftWheel.Steering = currentSteering;
-		FrontRightWheel.Steering = currentSteering;
-		BackLeftWheel.Steering = currentSteering * -1;
-		BackRightWheel.Steering = currentSteering * -1;
-		float BoardRotation =  (float)Mathf.MoveToward(Board.Rotation.X, Input.GetAxis("Left","Right") * MAX_BOARD_ANGLE, STEERING_SPEED * 2);
-		Board.Rotation = new Vector3(BoardRotation, 0, 0);
+		if (isTouchingGround){
+			float STEERING_SPEED = (float)delta * 0.4f;
+			float currentSteering = (float)Mathf.MoveToward(FrontRightWheel.Steering, Input.GetAxis("Right","Left") * MAX_STEER_ANGLE, STEERING_SPEED);
+			FrontLeftWheel.Steering = currentSteering;
+			FrontRightWheel.Steering = currentSteering;
+			BackLeftWheel.Steering = currentSteering * -1;
+			BackRightWheel.Steering = currentSteering * -1;
+			float BoardRotation =  (float)Mathf.MoveToward(Board.Rotation.X, Input.GetAxis("Left","Right") * MAX_BOARD_ANGLE, STEERING_SPEED * 2);
+			Board.Rotation = new Vector3(BoardRotation, 0, 0);
+		}
 
 		if(recenterCamera){
 			RecenterCamera(delta);
