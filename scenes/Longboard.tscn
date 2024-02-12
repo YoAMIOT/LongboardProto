@@ -18,18 +18,20 @@ albedo_color = Color(0.972549, 0.768627, 0.266667, 1)
 [node name="VehicleBody3D" type="VehicleBody3D"]
 mass = 5.0
 center_of_mass_mode = 1
+center_of_mass = Vector3(0.4, 0, 0)
 script = ExtResource("1_e7t43")
 
 [node name="Board" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.2, 0, 0, 0, 0.01, 0, 0, 0, 0.25, 0, 0, 0)
+transform = Transform3D(1.2, 0, 0, 0, 0.01, 0, 0, 0, 0.25, 0.4, 0, 0)
 mesh = SubResource("CylinderMesh_j8t35")
 surface_material_override/0 = SubResource("StandardMaterial3D_vceym")
 
 [node name="BoardCollision" type="CollisionShape3D" parent="."]
-transform = Transform3D(1.2, 0, 0, 0, 0.01, 0, 0, 0, 0.25, 0, 0, 0)
+transform = Transform3D(1.2, 0, 0, 0, 0.01, 0, 0, 0, 0.25, 0.4, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_hugjw")
 
 [node name="CameraPivotH" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0, 0)
 
 [node name="CameraPivotV" type="Node3D" parent="CameraPivotH"]
 
@@ -41,7 +43,7 @@ transform = Transform3D(1, -7.59039e-09, 4.30473e-08, 0, 0.984808, 0.173648, -4.
 fov = 103.0
 
 [node name="FrontRight" type="VehicleWheel3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.52, -0.06, 0.13)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.92, -0.06, 0.13)
 use_as_traction = true
 use_as_steering = true
 wheel_roll_influence = 0.0
@@ -61,7 +63,7 @@ skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_s85ft")
 
 [node name="FrontLeft" type="VehicleWheel3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.52, -0.06, -0.13)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.92, -0.06, -0.13)
 use_as_traction = true
 use_as_steering = true
 wheel_roll_influence = 0.0
@@ -81,7 +83,7 @@ skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_s85ft")
 
 [node name="BackLeft" type="VehicleWheel3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.4, -0.06, -0.13)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.06, -0.13)
 use_as_traction = true
 wheel_roll_influence = 0.0
 wheel_radius = 0.05
@@ -100,7 +102,7 @@ skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_s85ft")
 
 [node name="BackRight" type="VehicleWheel3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.4, -0.06, 0.13)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.06, 0.13)
 use_as_traction = true
 wheel_roll_influence = 0.0
 wheel_radius = 0.05
@@ -176,6 +178,6 @@ text = "8"
 horizontal_alignment = 2
 
 [node name="RayCast3D" type="RayCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
 
 [connection signal="timeout" from="ReCenterCamera" to="." method="_on_re_center_camera_timeout"]

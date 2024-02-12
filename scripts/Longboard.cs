@@ -3,7 +3,7 @@ using System;
 
 public partial class Longboard : VehicleBody3D{
 	private const float MAX_STEER_ANGLE= 0.08f;
-	private const float MAX_BOARD_ANGLE = MAX_STEER_ANGLE * 2;
+	private const float MAX_BOARD_ANGLE = MAX_STEER_ANGLE * -2;
 	private const float ENGINE_POWER = 5;
 	private const float BRAKE_POWER = 0.05f;
 	private const int MAX_THRUSTING_SPEED = 16;
@@ -65,7 +65,9 @@ public partial class Longboard : VehicleBody3D{
     }
 
     public override void _PhysicsProcess(double delta){
-		bool isTouchingGround = FrontLeftWheel.IsInContact() || FrontRightWheel.IsInContact();
+		bool isFrontWheelsTouchingGround = FrontLeftWheel.IsInContact() || FrontRightWheel.IsInContact();
+		float steeringAxis = Input.GetAxis("Right","Left");
+		float steeringSpeed = (float)delta * 0.4f;
 		
 		//Calculate speed
 		Vector3 currentVelocity = this.LinearVelocity * this.Transform.Basis;
@@ -81,24 +83,24 @@ public partial class Longboard : VehicleBody3D{
 
 		//Weigh Distribution
 		if (Input.IsActionPressed("Ctrl") && distanceFromGround < 0.25f){
-			this.CenterOfMass = new Vector3(-0.6f,0,0);
+			this.CenterOfMass = new Vector3(-0.2f,0,0);
 			//RotationTest
 			//this.Rotation = new Vector3(this.Rotation.X, (float)Mathf.MoveToward(this.Rotation.Y, this.Rotation.Y + 10, delta * 2), this.Rotation.Z);
 		} else {
-			if (this.CenterOfMass != new Vector3(0,0,0)){
-				this.CenterOfMass = new Vector3(0,0,0);
+			if (this.CenterOfMass != new Vector3(0.4f,0,0)){
+				this.CenterOfMass = new Vector3(0.4f,0,0);
 			}
 		}
 
 		//Thrust management
-		if (Input.IsActionJustPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && thrustStamina > 0 && isTouchingGround){
+		if (Input.IsActionJustPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && thrustStamina > 0 && isFrontWheelsTouchingGround){
 			ThrustCooldown.Start();
 			DecreaseStamina();
 			canThrust = false;
 		} else {
 			this.EngineForce = 0;
 		}
-		if (ThrustCooldown.TimeLeft > 1 && speed < MAX_THRUSTING_SPEED && isTouchingGround){
+		if (ThrustCooldown.TimeLeft > 1 && speed < MAX_THRUSTING_SPEED && isFrontWheelsTouchingGround){
 			this.EngineForce = ENGINE_POWER;
 			Camera.Fov = (float)Mathf.Lerp(Camera.Fov, FOV_MAX, delta * 4);
 		} else {
@@ -106,7 +108,7 @@ public partial class Longboard : VehicleBody3D{
 		}
 
 		//Brake management
-		if (Input.IsActionPressed("Backward") && !Input.IsActionPressed("Forward") && isTouchingGround){
+		if (Input.IsActionPressed("Backward") && !Input.IsActionPressed("Forward") && isFrontWheelsTouchingGround){
 			this.Brake = BRAKE_POWER;
 		} else {
 			this.Brake = 0;
@@ -114,20 +116,25 @@ public partial class Longboard : VehicleBody3D{
 
 
 		//Steering
-		if (isTouchingGround){
-			float STEERING_SPEED = (float)delta * 0.4f;
-			float currentSteering = (float)Mathf.MoveToward(FrontRightWheel.Steering, Input.GetAxis("Right","Left") * MAX_STEER_ANGLE, STEERING_SPEED);
-			FrontLeftWheel.Steering = currentSteering;
-			FrontRightWheel.Steering = currentSteering;
-			BackLeftWheel.Steering = currentSteering * -1;
-			BackRightWheel.Steering = currentSteering * -1;
-			float BoardRotation =  (float)Mathf.MoveToward(Board.Rotation.X, Input.GetAxis("Left","Right") * MAX_BOARD_ANGLE, STEERING_SPEED * 2);
-			Board.Rotation = new Vector3(BoardRotation, 0, 0);
+		if (isFrontWheelsTouchingGround){
+			ManageSteering(steeringAxis, steeringSpeed);
+		} else {
+			ManageSteering(0, steeringSpeed);
 		}
 
 		if(recenterCamera){
 			RecenterCamera(delta);
 		}
+	}
+
+	private void ManageSteering(float steeringAxis, float steeringSpeed){
+		float currentSteering = (float)Mathf.MoveToward(FrontRightWheel.Steering, steeringAxis * MAX_STEER_ANGLE, steeringSpeed);
+		FrontLeftWheel.Steering = currentSteering;
+		FrontRightWheel.Steering = currentSteering;
+		BackLeftWheel.Steering = currentSteering * -1;
+		BackRightWheel.Steering = currentSteering * -1;
+		float BoardRotation =  (float)Mathf.MoveToward(Board.Rotation.X, steeringAxis * MAX_BOARD_ANGLE, steeringSpeed * 2);
+		Board.Rotation = new Vector3(BoardRotation, 0, 0);
 	}
 
 	//Manage recentering
