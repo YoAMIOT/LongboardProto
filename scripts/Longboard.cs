@@ -66,6 +66,7 @@ public partial class Longboard : VehicleBody3D{
 
     public override void _PhysicsProcess(double delta){
 		bool isFrontWheelsTouchingGround = FrontLeftWheel.IsInContact() || FrontRightWheel.IsInContact();
+		bool isBackWheelsTouchingGround = BackLeftWheel.IsInContact() || BackRightWheel.IsInContact();
 		float steeringAxis = Input.GetAxis("Right","Left");
 		float steeringSpeed = (float)delta * 0.4f;
 		
@@ -82,7 +83,7 @@ public partial class Longboard : VehicleBody3D{
 		}
 
 		//Weigh Distribution
-		if (Input.IsActionPressed("Ctrl") && distanceFromGround < 0.25f){
+		if (Input.IsActionPressed("Ctrl") && distanceFromGround < 0.25f && isBackWheelsTouchingGround){
 			this.CenterOfMass = new Vector3(-0.2f,0,0);
 		} else {
 			if (this.CenterOfMass != new Vector3(0.4f,0,0)){
@@ -90,7 +91,7 @@ public partial class Longboard : VehicleBody3D{
 			}
 		}
 
-		if (Input.IsActionPressed("Ctrl")){
+		if (Input.IsActionPressed("Ctrl") && isBackWheelsTouchingGround){
 			if (Input.IsActionPressed("Right")){
 				this.Rotation = new Vector3(this.Rotation.X, (float)Mathf.MoveToward(this.Rotation.Y, this.Rotation.Y - 1, delta * 2), this.Rotation.Z);
 			} else if (Input.IsActionPressed("Left")){
@@ -99,14 +100,14 @@ public partial class Longboard : VehicleBody3D{
 		}
 
 		//Thrust management
-		if (Input.IsActionJustPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && thrustStamina > 0 && isFrontWheelsTouchingGround){
+		if (Input.IsActionJustPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && thrustStamina > 0 && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
 			ThrustCooldown.Start();
 			DecreaseStamina();
 			canThrust = false;
 		} else {
 			this.EngineForce = 0;
 		}
-		if (ThrustCooldown.TimeLeft > 1 && speed < MAX_THRUSTING_SPEED && isFrontWheelsTouchingGround){
+		if (ThrustCooldown.TimeLeft > 1 && speed < MAX_THRUSTING_SPEED && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
 			this.EngineForce = ENGINE_POWER;
 			Camera.Fov = (float)Mathf.Lerp(Camera.Fov, FOV_MAX, delta * 4);
 		} else {
@@ -114,14 +115,14 @@ public partial class Longboard : VehicleBody3D{
 		}
 
 		//Brake management
-		if (Input.IsActionPressed("Backward") && !Input.IsActionPressed("Forward") && isFrontWheelsTouchingGround){
+		if (Input.IsActionPressed("Backward") && !Input.IsActionPressed("Forward") && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
 			this.Brake = BRAKE_POWER;
 		} else {
 			this.Brake = 0;
 		}
 
 		//Steering
-		if (!isFrontWheelsTouchingGround){
+		if (!isFrontWheelsTouchingGround || !isBackWheelsTouchingGround){
 			steeringAxis = 0;
 		}
 		ManageSteering(steeringAxis, steeringSpeed);
