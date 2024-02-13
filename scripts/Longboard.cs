@@ -84,11 +84,17 @@ public partial class Longboard : VehicleBody3D{
 		//Weigh Distribution
 		if (Input.IsActionPressed("Ctrl") && distanceFromGround < 0.25f){
 			this.CenterOfMass = new Vector3(-0.2f,0,0);
-			//RotationTest
-			//this.Rotation = new Vector3(this.Rotation.X, (float)Mathf.MoveToward(this.Rotation.Y, this.Rotation.Y + 10, delta * 2), this.Rotation.Z);
 		} else {
 			if (this.CenterOfMass != new Vector3(0.4f,0,0)){
 				this.CenterOfMass = new Vector3(0.4f,0,0);
+			}
+		}
+
+		if (Input.IsActionPressed("Ctrl")){
+			if (Input.IsActionPressed("Right")){
+				this.Rotation = new Vector3(this.Rotation.X, (float)Mathf.MoveToward(this.Rotation.Y, this.Rotation.Y - 1, delta * 2), this.Rotation.Z);
+			} else if (Input.IsActionPressed("Left")){
+				this.Rotation = new Vector3(this.Rotation.X, (float)Mathf.MoveToward(this.Rotation.Y, this.Rotation.Y + 1, delta * 2), this.Rotation.Z);
 			}
 		}
 
