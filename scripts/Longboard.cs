@@ -120,13 +120,11 @@ public partial class Longboard : VehicleBody3D{
 			this.Brake = 0;
 		}
 
-
 		//Steering
-		if (isFrontWheelsTouchingGround){
-			ManageSteering(steeringAxis, steeringSpeed);
-		} else {
-			ManageSteering(0, steeringSpeed);
+		if (!isFrontWheelsTouchingGround){
+			steeringAxis = 0;
 		}
+		ManageSteering(steeringAxis, steeringSpeed);
 
 		if(recenterCamera){
 			RecenterCamera(delta);
