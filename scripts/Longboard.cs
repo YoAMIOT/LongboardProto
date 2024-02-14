@@ -10,6 +10,7 @@ public partial class Longboard : VehicleBody3D{
 	private const int MAX_THRUST_STAMINA = 8;
 	private const int FOV_MIN = 103;
 	private const int FOV_MAX = 120;
+	private const int MAX_BALANCING_COEF = 60;
 	private Node3D CameraPivotH;
 	private Node3D CameraPivotV;
 	private Camera3D Camera;
@@ -31,9 +32,12 @@ public partial class Longboard : VehicleBody3D{
 	private int thrustStamina = MAX_THRUST_STAMINA;
 	private bool canThrust = true;
 	private RayCast3D RayCast;
+	private Timer BackBalancingCooldown;
+	private int timeBalancing = 0;
 
 	public override void _Ready(){
 		Input.MouseMode = Input.MouseModeEnum.Captured;
+		BackBalancingCooldown = GetNode<Timer>("BackBalancingCooldown");
 		CameraPivotH = GetNode<Node3D>("CameraPivotH");
 		CameraPivotV = GetNode<Node3D>("CameraPivotH/CameraPivotV/");
 		FrontRightWheel = GetNode<VehicleWheel3D>("FrontRight");
@@ -42,7 +46,7 @@ public partial class Longboard : VehicleBody3D{
 		BackLeftWheel = GetNode<VehicleWheel3D>("BackLeft");
 		Board = GetNode<MeshInstance3D>("Board");
 		ThrustCooldown = GetNode<Timer>("ThrustCooldown");
-		ThrustCooldown.Timeout += resetThrustCapability;
+		ThrustCooldown.Timeout += ResetThrustCapability;
 		Speedometer = GetNode<Label>("HUD/Speedometer");
 		RecenterCameraTimer = GetNode<Timer>("ReCenterCamera");
 		StaminaCooldown = GetNode<Timer>("StaminaCooldown");
@@ -83,21 +87,28 @@ public partial class Longboard : VehicleBody3D{
 		}
 
 		//Weigh Distribution
-		if (Input.IsActionPressed("Ctrl") && distanceFromGround < 0.25f && isBackWheelsTouchingGround){
+		if (Input.IsActionPressed("Ctrl") && distanceFromGround < 0.25f && isBackWheelsTouchingGround && timeBalancing < MAX_BALANCING_COEF){
 			this.CenterOfMass = new Vector3(-0.2f,0,0);
 		} else {
 			if (this.CenterOfMass != new Vector3(0.4f,0,0)){
 				this.CenterOfMass = new Vector3(0.4f,0,0);
 			}
 		}
+		
+		if (isFrontWheelsTouchingGround){
+			timeBalancing = 0;
+		}
 
 		if (Input.IsActionPressed("Ctrl") && isBackWheelsTouchingGround){
+			timeBalancing += 1;
 			if (Input.IsActionPressed("Right")){
 				this.Rotation = new Vector3(this.Rotation.X, (float)Mathf.MoveToward(this.Rotation.Y, this.Rotation.Y - 1, delta * 2), this.Rotation.Z);
 			} else if (Input.IsActionPressed("Left")){
 				this.Rotation = new Vector3(this.Rotation.X, (float)Mathf.MoveToward(this.Rotation.Y, this.Rotation.Y + 1, delta * 2), this.Rotation.Z);
 			}
 		}
+
+		GD.Print(timeBalancing);
 
 		//Thrust management
 		if (Input.IsActionJustPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && thrustStamina > 0 && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
@@ -183,7 +194,7 @@ public partial class Longboard : VehicleBody3D{
 		recenterCamera = true;
 	}
 
-	private void resetThrustCapability(){
+	private void ResetThrustCapability(){
 		canThrust = true;
 	}
 }
