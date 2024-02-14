@@ -108,8 +108,6 @@ public partial class Longboard : VehicleBody3D{
 			}
 		}
 
-		GD.Print(timeBalancing);
-
 		//Thrust management
 		if (Input.IsActionJustPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && thrustStamina > 0 && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
 			ThrustCooldown.Start();
