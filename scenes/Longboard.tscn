@@ -132,6 +132,9 @@ one_shot = true
 wait_time = 0.7
 one_shot = true
 
+[node name="BackBalancingCooldown" type="Timer" parent="."]
+one_shot = true
+
 [node name="HUD" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15
@@ -179,5 +182,3 @@ horizontal_alignment = 2
 
 [node name="RayCast3D" type="RayCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
-
-[connection signal="timeout" from="ReCenterCamera" to="." method="_on_re_center_camera_timeout"]
