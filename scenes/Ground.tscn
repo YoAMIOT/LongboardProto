@@ -1,14 +1,12 @@
-[gd_scene load_steps=7 format=3 uid="uid://cmowh0pcwm3j7"]
+[gd_scene load_steps=6 format=3 uid="uid://cmowh0pcwm3j7"]
 
 [ext_resource type="PackedScene" uid="uid://d3vbnmquou572" path="res://scenes/Longboard.tscn" id="1_5fh8e"]
 [ext_resource type="PackedScene" uid="uid://ptt1re4t7ht1" path="res://scenes/track1.tscn" id="2_licif"]
-[ext_resource type="PackedScene" uid="uid://bmi18irpji2xp" path="res://assets/CubeMap.gltf" id="3_geuoy"]
+[ext_resource type="PackedScene" uid="uid://b1qeagjc2tkfq" path="res://scenes/CubeMap.tscn" id="3_qgupx"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7m6d0"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_jvw2d"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_wh1ab"]
 
 [node name="Node3D" type="Node3D"]
 
@@ -42,15 +40,5 @@ shape = SubResource("BoxShape3D_7m6d0")
 transform = Transform3D(1000, 0, 0, 0, 0.01, 0, 0, 0, 20, 20, 0, 0)
 mesh = SubResource("BoxMesh_jvw2d")
 
-[node name="CubeMap" parent="." instance=ExtResource("3_geuoy")]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, -21.221, 10, -8.91)
-
-[node name="GravityInverterTest" type="Area3D" parent="."]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, -31.8613, 10, 16.2799)
-gravity_space_override = 3
-gravity_point_center = Vector3(0, 1, 0)
-gravity_direction = Vector3(0, 1, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="GravityInverterTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.69317, -0.610827, 0.616381)
-shape = SubResource("BoxShape3D_wh1ab")
+[node name="CubeMap" parent="." instance=ExtResource("3_qgupx")]
+transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, -50, 18, 0)
