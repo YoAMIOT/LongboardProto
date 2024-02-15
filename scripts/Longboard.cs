@@ -87,7 +87,7 @@ public partial class Longboard : VehicleBody3D{
 		}
 
 		//Weigh Distribution
-		if (Input.IsActionPressed("Ctrl") && distanceFromGround < 0.25f && isBackWheelsTouchingGround && timeBalancing < MAX_BALANCING_COEF){
+		if (Input.IsActionPressed("Ctrl") && distanceFromGround < 0.25f && isBackWheelsTouchingGround && timeBalancing < MAX_BALANCING_COEF && BackBalancingCooldown.TimeLeft > 0){
 			this.CenterOfMass = new Vector3(-0.2f,0,0);
 		} else {
 			if (this.CenterOfMass != new Vector3(0.4f,0,0)){
@@ -96,8 +96,12 @@ public partial class Longboard : VehicleBody3D{
 		}
 		
 		if (isFrontWheelsTouchingGround){
+			if (timeBalancing < 0){
+				BackBalancingCooldown.Start();
+			}
 			timeBalancing = 0;
 		}
+		GD.Print(BackBalancingCooldown.TimeLeft == 0);
 
 		if (Input.IsActionPressed("Ctrl") && isBackWheelsTouchingGround){
 			timeBalancing += 1;
