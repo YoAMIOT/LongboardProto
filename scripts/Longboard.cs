@@ -6,7 +6,7 @@ public partial class Longboard : VehicleBody3D{
 	private const float MAX_BOARD_ANGLE = MAX_STEER_ANGLE * -2;
 	private const float ENGINE_POWER = 5;
 	private const float BRAKE_POWER = 0.05f;
-	private const int MAX_THRUSTING_SPEED = 16;
+	private const int MAX_THRUSTING_SPEED = 20;
 	private const int MAX_THRUST_STAMINA = 8;
 	private const int FOV_MIN = 103;
 	private const int FOV_MAX = 120;

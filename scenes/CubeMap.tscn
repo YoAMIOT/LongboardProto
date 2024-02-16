@@ -38,7 +38,7 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_haib8")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_jcgwo"]
-size = Vector3(2, 1.5, 1.5)
+size = Vector3(2, 1.45, 1.45)
 
 [node name="CubeMap" type="StaticBody3D"]
 

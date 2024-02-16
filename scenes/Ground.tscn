@@ -41,4 +41,4 @@ transform = Transform3D(1000, 0, 0, 0, 0.01, 0, 0, 0, 20, 20, 0, 0)
 mesh = SubResource("BoxMesh_jvw2d")
 
 [node name="CubeMap" parent="." instance=ExtResource("3_qgupx")]
-transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, -128.756, 100, 0)
+transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, -128.756, 90.9, 0)
