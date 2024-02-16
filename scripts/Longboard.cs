@@ -133,9 +133,9 @@ public partial class Longboard : VehicleBody3D{
 		if (Input.IsActionPressed("Ctrl") && isBackWheelsTouchingGround && !(BackBalancingCooldown.TimeLeft > 0)){
 			timeBalancing += 1;
 			if (Input.IsActionPressed("Right")){
-				this.Rotation = new Vector3(this.Rotation.X, (float)Mathf.MoveToward(this.Rotation.Y, this.Rotation.Y - 1, delta * 2), this.Rotation.Z);
+				this.RotateObjectLocal(new Vector3(0,1,0), -0.03f);
 			} else if (Input.IsActionPressed("Left")){
-				this.Rotation = new Vector3(this.Rotation.X, (float)Mathf.MoveToward(this.Rotation.Y, this.Rotation.Y + 1, delta * 2), this.Rotation.Z);
+				this.RotateObjectLocal(new Vector3(0,1,0), 0.03f);
 			}
 		}
 
