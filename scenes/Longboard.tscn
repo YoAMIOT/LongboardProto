@@ -16,6 +16,7 @@ points = PackedVector3Array(-0.5, -1, 0, -0.497651, -1, -0.0490407, -0.497651, -
 albedo_color = Color(0.972549, 0.768627, 0.266667, 1)
 
 [node name="VehicleBody3D" type="VehicleBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 mass = 5.0
 center_of_mass_mode = 1
 center_of_mass = Vector3(0.4, 0, 0)
@@ -133,6 +134,7 @@ wait_time = 0.7
 one_shot = true
 
 [node name="BackBalancingCooldown" type="Timer" parent="."]
+wait_time = 0.5
 one_shot = true
 
 [node name="HUD" type="Control" parent="."]

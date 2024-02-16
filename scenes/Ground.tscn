@@ -1,8 +1,24 @@
-[gd_scene load_steps=6 format=3 uid="uid://cmowh0pcwm3j7"]
+[gd_scene load_steps=9 format=3 uid="uid://cmowh0pcwm3j7"]
 
 [ext_resource type="PackedScene" uid="uid://d3vbnmquou572" path="res://scenes/Longboard.tscn" id="1_5fh8e"]
 [ext_resource type="PackedScene" uid="uid://ptt1re4t7ht1" path="res://scenes/track1.tscn" id="2_licif"]
 [ext_resource type="PackedScene" uid="uid://b1qeagjc2tkfq" path="res://scenes/CubeMap.tscn" id="3_qgupx"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5hkaq"]
+sky_top_color = Color(0.239216, 0.701961, 0.913725, 1)
+sky_horizon_color = Color(0.615686, 0.623529, 0.909804, 1)
+ground_bottom_color = Color(0.239216, 0.701961, 0.913725, 1)
+ground_horizon_color = Color(0.615686, 0.623529, 0.909804, 1)
+ground_curve = 0.15
+sun_angle_max = 13.27
+sun_curve = 0.310577
+
+[sub_resource type="Sky" id="Sky_p1dm4"]
+sky_material = SubResource("ProceduralSkyMaterial_5hkaq")
+
+[sub_resource type="Environment" id="Environment_cp3ov"]
+background_mode = 2
+sky = SubResource("Sky_p1dm4")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7m6d0"]
 
@@ -10,8 +26,11 @@
 
 [node name="Node3D" type="Node3D"]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.781499, 0.623907, 0, -0.623907, 0.781499, 0, 11.9132, 0)
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_cp3ov")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(0.189534, -0.00155181, -0.981873, 0.95826, 0.218289, 0.184631, 0.214045, -0.975883, 0.0428603, 0, 0, 0)
 
 [node name="VehicleBody3D" parent="." instance=ExtResource("1_5fh8e")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.451438, -0.22147)

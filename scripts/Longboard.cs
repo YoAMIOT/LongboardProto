@@ -10,7 +10,7 @@ public partial class Longboard : VehicleBody3D{
 	private const int MAX_THRUST_STAMINA = 8;
 	private const int FOV_MIN = 103;
 	private const int FOV_MAX = 120;
-	private const int MAX_BALANCING_COEF = 60;
+	private const int MAX_BALANCING_TIME = 20;
 	private Node3D CameraPivotH;
 	private Node3D CameraPivotV;
 	private Camera3D Camera;
@@ -73,44 +73,10 @@ public partial class Longboard : VehicleBody3D{
 		bool isBackWheelsTouchingGround = BackLeftWheel.IsInContact() || BackRightWheel.IsInContact();
 		float steeringAxis = Input.GetAxis("Right","Left");
 		float steeringSpeed = (float)delta * 0.4f;
-		
-		//Calculate speed
-		Vector3 currentVelocity = this.LinearVelocity * this.Transform.Basis;
-		int speed = (int)(currentVelocity.Length() * 3.6);
-		Speedometer.Text = (speed).ToString() + " Km/h";
-
-		//Get distance from the ground
-		float distanceFromGround = 0f;
-		if (RayCast.IsColliding()){
-			Vector3 collisionPoint = RayCast.GetCollisionPoint();
-			distanceFromGround = RayCast.GlobalTransform.Origin.DistanceTo(collisionPoint);
-		}
+		int speed = GetCurrentSpeed();
 
 		//Weigh Distribution
-		if (Input.IsActionPressed("Ctrl") && distanceFromGround < 0.25f && isBackWheelsTouchingGround && timeBalancing < MAX_BALANCING_COEF && BackBalancingCooldown.TimeLeft > 0){
-			this.CenterOfMass = new Vector3(-0.2f,0,0);
-		} else {
-			if (this.CenterOfMass != new Vector3(0.4f,0,0)){
-				this.CenterOfMass = new Vector3(0.4f,0,0);
-			}
-		}
-		
-		if (isFrontWheelsTouchingGround){
-			if (timeBalancing < 0){
-				BackBalancingCooldown.Start();
-			}
-			timeBalancing = 0;
-		}
-		GD.Print(BackBalancingCooldown.TimeLeft == 0);
-
-		if (Input.IsActionPressed("Ctrl") && isBackWheelsTouchingGround){
-			timeBalancing += 1;
-			if (Input.IsActionPressed("Right")){
-				this.Rotation = new Vector3(this.Rotation.X, (float)Mathf.MoveToward(this.Rotation.Y, this.Rotation.Y - 1, delta * 2), this.Rotation.Z);
-			} else if (Input.IsActionPressed("Left")){
-				this.Rotation = new Vector3(this.Rotation.X, (float)Mathf.MoveToward(this.Rotation.Y, this.Rotation.Y + 1, delta * 2), this.Rotation.Z);
-			}
-		}
+		ManageWeighDistribution(isFrontWheelsTouchingGround, isBackWheelsTouchingGround, delta);
 
 		//Thrust management
 		if (Input.IsActionJustPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && thrustStamina > 0 && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
@@ -140,6 +106,7 @@ public partial class Longboard : VehicleBody3D{
 		}
 		ManageSteering(steeringAxis, steeringSpeed);
 
+		//Camera recenter
 		if(recenterCamera){
 			RecenterCamera(delta);
 		}
@@ -155,6 +122,32 @@ public partial class Longboard : VehicleBody3D{
 		Board.Rotation = new Vector3(BoardRotation, 0, 0);
 	}
 
+	private void ManageWeighDistribution(bool isFrontWheelsTouchingGround, bool isBackWheelsTouchingGround, double delta){
+		if (isFrontWheelsTouchingGround){
+			if (timeBalancing > 5){
+				BackBalancingCooldown.Start();
+			}
+			timeBalancing = 0;
+		}
+
+		if (Input.IsActionPressed("Ctrl") && isBackWheelsTouchingGround && !(BackBalancingCooldown.TimeLeft > 0)){
+			timeBalancing += 1;
+			if (Input.IsActionPressed("Right")){
+				this.Rotation = new Vector3(this.Rotation.X, (float)Mathf.MoveToward(this.Rotation.Y, this.Rotation.Y - 1, delta * 2), this.Rotation.Z);
+			} else if (Input.IsActionPressed("Left")){
+				this.Rotation = new Vector3(this.Rotation.X, (float)Mathf.MoveToward(this.Rotation.Y, this.Rotation.Y + 1, delta * 2), this.Rotation.Z);
+			}
+		}
+
+		if (Input.IsActionPressed("Ctrl") && GetDistanceFromGround() < 0.25f && timeBalancing < MAX_BALANCING_TIME && isBackWheelsTouchingGround && timeBalancing < MAX_BALANCING_TIME && !(BackBalancingCooldown.TimeLeft > 0)){
+			this.CenterOfMass = new Vector3(-0.2f,0,0);
+		} else {
+			if (this.CenterOfMass != new Vector3(0.4f,0,0)){
+				this.CenterOfMass = new Vector3(0.4f,0,0);
+			}
+		}
+	}
+
 	//Manage recentering
 	private void RecenterCamera(double delta){
 		if(CameraPivotH.Rotation.Y != 0){
@@ -168,6 +161,22 @@ public partial class Longboard : VehicleBody3D{
 			if (CameraPivotH.Rotation.Y == 0 && CameraPivotV.Rotation.Z == 0){
 				recenterCamera = false;
 			}
+	}
+
+	private float GetDistanceFromGround(){
+		float distanceFromGround = 0f;
+		if (RayCast.IsColliding()){
+			Vector3 collisionPoint = RayCast.GetCollisionPoint();
+			distanceFromGround = RayCast.GlobalTransform.Origin.DistanceTo(collisionPoint);
+		}
+		return distanceFromGround;
+	}
+
+	private int GetCurrentSpeed(){
+		Vector3 currentVelocity = this.LinearVelocity * this.Transform.Basis;
+		int speed = (int)(currentVelocity.Length() * 3.6);
+		Speedometer.Text = (speed).ToString() + " Km/h";
+		return speed;
 	}
 
 	private void StaminaReload(){
