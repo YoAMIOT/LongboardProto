@@ -5,7 +5,7 @@ public partial class Longboard : VehicleBody3D{
 	private const float MAX_STEER_ANGLE= 0.08f;
 	private const float MAX_BOARD_ANGLE = MAX_STEER_ANGLE * -2;
 	private const float ENGINE_POWER = 5;
-	private const float BRAKE_POWER = 0.05f;
+	private const float BRAKE_POWER = 0.1f;
 	private const int MAX_THRUSTING_SPEED = 20;
 	private const int MAX_THRUST_STAMINA = 8;
 	private const int FOV_MIN = 103;
@@ -96,6 +96,8 @@ public partial class Longboard : VehicleBody3D{
 		//Brake management
 		if (Input.IsActionPressed("Backward") && !Input.IsActionPressed("Forward") && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
 			this.Brake = BRAKE_POWER;
+		} else if (speed >= 60){
+			this.Brake = 0.06f;
 		} else {
 			this.Brake = 0;
 		}
