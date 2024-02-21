@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://bc6co6tn1occc"]
+
+[ext_resource type="Script" path="res://scripts/Camera.cs" id="1_kl3t2"]
+
+[node name="CameraPivotH" type="Node3D"]
+script = ExtResource("1_kl3t2")
+
+[node name="CameraPivotV" type="Node3D" parent="."]
+
+[node name="CameraSpringArm" type="SpringArm3D" parent="CameraPivotV"]
+spring_length = 1.5
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivotV/CameraSpringArm"]
+transform = Transform3D(1, -7.59039e-09, 4.30473e-08, 0, 0.984808, 0.173648, -4.37114e-08, -0.173648, 0.984808, 0, 0, 0)
+fov = 103.0
+
+[node name="ReCenterCamera" type="Timer" parent="."]
+wait_time = 0.7
+one_shot = true

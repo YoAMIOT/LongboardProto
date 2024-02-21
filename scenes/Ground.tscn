@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://cmowh0pcwm3j7"]
 
 [ext_resource type="PackedScene" uid="uid://d3vbnmquou572" path="res://scenes/Longboard.tscn" id="1_5fh8e"]
-[ext_resource type="PackedScene" uid="uid://ptt1re4t7ht1" path="res://scenes/track1.tscn" id="2_licif"]
+[ext_resource type="PackedScene" uid="uid://cflgm4h4vtl2o" path="res://scenes/Player.tscn" id="2_45gu8"]
 [ext_resource type="PackedScene" uid="uid://b1qeagjc2tkfq" path="res://scenes/CubeMap.tscn" id="3_qgupx"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5hkaq"]
@@ -13,12 +13,12 @@ ground_curve = 0.15
 sun_angle_max = 13.27
 sun_curve = 0.310577
 
-[sub_resource type="Sky" id="Sky_p1dm4"]
+[sub_resource type="Sky" id="Sky_nw13e"]
 sky_material = SubResource("ProceduralSkyMaterial_5hkaq")
 
 [sub_resource type="Environment" id="Environment_cp3ov"]
 background_mode = 2
-sky = SubResource("Sky_p1dm4")
+sky = SubResource("Sky_nw13e")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7m6d0"]
 
@@ -32,19 +32,13 @@ environment = SubResource("Environment_cp3ov")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
 transform = Transform3D(0.189534, -0.00155181, -0.981873, 0.95826, 0.218289, 0.184631, 0.214045, -0.975883, 0.0428603, 0, 0, 0)
 
-[node name="VehicleBody3D" parent="." instance=ExtResource("1_5fh8e")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.451438, -0.22147)
+[node name="Ground" type="StaticBody3D" parent="."]
 
-[node name="Track" parent="." instance=ExtResource("2_licif")]
-transform = Transform3D(0.15, 0, 0, 0, 0.03, 0, 0, 0, 0.15, 16.2942, 0, 33.0372)
-
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
 transform = Transform3D(100, 0, 0, 0, 0.01, 0, 0, 0, 100, 20, 0, 0)
 shape = SubResource("BoxShape3D_7m6d0")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
 transform = Transform3D(100, 0, 0, 0, 0.01, 0, 0, 0, 100, 20, 0, 0)
 mesh = SubResource("BoxMesh_jvw2d")
 
@@ -61,3 +55,9 @@ mesh = SubResource("BoxMesh_jvw2d")
 
 [node name="CubeMap" parent="." instance=ExtResource("3_qgupx")]
 transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, -128.756, 90.9, 0)
+
+[node name="Player" parent="." instance=ExtResource("2_45gu8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.74968, 0)
+
+[node name="Longboard" parent="Player" instance=ExtResource("1_5fh8e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.83034, 0.1, 0)
