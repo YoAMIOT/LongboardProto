@@ -7,7 +7,6 @@ public partial class Longboard : VehicleBody3D{
 	private const float ENGINE_POWER = 5;
 	private const float BRAKE_POWER = 0.1f;
 	private const int MAX_THRUSTING_SPEED = 20;
-	private const int MAX_THRUST_STAMINA = 8;
 	private const int MAX_BALANCING_TIME = 20;
 	private VehicleWheel3D FrontRightWheel;
 	private VehicleWheel3D FrontLeftWheel;
@@ -16,13 +15,12 @@ public partial class Longboard : VehicleBody3D{
 	private MeshInstance3D Board;
 	private Timer ThrustCooldown;
 	private Label Speedometer;
-	private Timer StaminaCooldown;
-	private Label StaminaLabel;
 	private float MouseSensivity = 0.05f;
-	private int thrustStamina = MAX_THRUST_STAMINA;
 	private bool canThrust = true;
+	private bool hasStamina = true;
 	private RayCast3D RayCast;
 	private Timer BackBalancingCooldown;
+	private ProgressBar StaminaBar;
 	private int timeBalancing = 0;
 
 	public override void _Ready(){
@@ -35,10 +33,9 @@ public partial class Longboard : VehicleBody3D{
 		ThrustCooldown = GetNode<Timer>("ThrustCooldown");
 		ThrustCooldown.Timeout += ResetThrustCapability;
 		Speedometer = GetNode<Label>("HUD/Speedometer");
-		StaminaCooldown = GetNode<Timer>("StaminaCooldown");
-		StaminaLabel = GetNode<Label>("HUD/StaminaLabel");
-		StaminaCooldown.Timeout += StaminaReload;
 		RayCast = GetNode<RayCast3D>("RayCast3D");
+		StaminaBar = GetNode<ProgressBar>("HUD/StaminaBar");
+		StaminaBar.MaxValue = ThrustCooldown.WaitTime;
 	}
 
     public override void _PhysicsProcess(double delta){
@@ -52,9 +49,8 @@ public partial class Longboard : VehicleBody3D{
 		ManageWeighDistribution(isFrontWheelsTouchingGround, isBackWheelsTouchingGround, delta);
 
 		//Thrust management
-		if (Input.IsActionJustPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && thrustStamina > 0 && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
+		if (Input.IsActionPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && hasStamina && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
 			ThrustCooldown.Start();
-			DecreaseStamina();
 			canThrust = false;
 		} else {
 			this.EngineForce = 0;
@@ -77,6 +73,9 @@ public partial class Longboard : VehicleBody3D{
 			steeringAxis = 0;
 		}
 		ManageSteering(steeringAxis, steeringSpeed);
+
+		//Update stamina bar
+		UpdateStaminaBar();
 	}
 
 	private void ManageSteering(float steeringAxis, float steeringSpeed){
@@ -131,29 +130,11 @@ public partial class Longboard : VehicleBody3D{
 		return speed;
 	}
 
-	private void StaminaReload(){
-		if (thrustStamina < MAX_THRUST_STAMINA){
-			thrustStamina += 1;
-			UpdateStaminaLabel();
-			if (thrustStamina < MAX_THRUST_STAMINA){
-				StaminaCooldown.Start();
-			}
-		}
-	}
-
-	private void DecreaseStamina(){
-		if (thrustStamina > 0){
-			thrustStamina -= 1;
-			UpdateStaminaLabel();
-			StaminaCooldown.Start();
-		}
-	}
-
-	private void UpdateStaminaLabel(){
-		StaminaLabel.Text = thrustStamina.ToString();
-	}
-
 	private void ResetThrustCapability(){
 		canThrust = true;
+	}
+
+	private void UpdateStaminaBar(){
+		StaminaBar.Value = ThrustCooldown.TimeLeft;
 	}
 }
