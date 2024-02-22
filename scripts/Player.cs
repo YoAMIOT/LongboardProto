@@ -7,14 +7,16 @@ public partial class Player : CharacterBody3D
 	private const float JUMP_VELOCITY = 4.5f;
 	private const float LERP_VALUE = 0.15f;
 	private float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
-	private Node3D CamPivotH;
+	private Camera Camera;
 	private Node3D Armature;
 	private AnimationTree AnimTree;
 
+
 	public override void _Ready(){
-		CamPivotH = GetNode<Node3D>("CameraPivotH");
+		Camera = GetNode<Camera>("CameraPivotH");
 		Armature = GetNode<Node3D>("Armature");
 		AnimTree = GetNode<AnimationTree>("AnimationTree");
+		Camera.InteractedWith += InteractWith;
 	}
 
 	public override void _PhysicsProcess(double delta){
@@ -32,7 +34,7 @@ public partial class Player : CharacterBody3D
 
 		Vector2 inputDir = Input.GetVector("Left", "Right", "Forward", "Backward");
 		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
-		direction = direction.Rotated(Vector3.Up, Mathf.DegToRad(CamPivotH.RotationDegrees.Y));
+		direction = direction.Rotated(Vector3.Up, Mathf.DegToRad(Camera.RotationDegrees.Y));
 		if (direction != Vector3.Zero){
 			velocity.X = Mathf.Lerp(velocity.X, direction.X * SPEED, LERP_VALUE);
 			velocity.Z = Mathf.Lerp(velocity.Z, direction.Z * SPEED, LERP_VALUE);
@@ -46,5 +48,9 @@ public partial class Player : CharacterBody3D
 
 		Velocity = velocity;
 		MoveAndSlide();
+	}
+
+	private void InteractWith(Node Target){
+		GD.Print(Target.Name);
 	}
 }

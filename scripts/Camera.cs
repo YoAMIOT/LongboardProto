@@ -10,6 +10,11 @@ public partial class Camera : Node3D{
 	private Node3D CameraPivotV;
 	private Camera3D Cam;
 	private Timer RecenterCameraTimer;
+	private RayCast3D InteractionRayCast;
+	private Label InteractionLabel;
+
+	[Signal]
+	public delegate void InteractedWithEventHandler(Node Target);
 
 	public override void _Ready(){
 		Input.MouseMode = Input.MouseModeEnum.Captured;
@@ -17,6 +22,8 @@ public partial class Camera : Node3D{
 		Cam = GetNode<Camera3D>("CameraPivotV/CameraSpringArm/Camera3D");
 		RecenterCameraTimer = GetNode<Timer>("ReCenterCamera");
 		RecenterCameraTimer.Timeout += TiggerRecenterCamera;
+		InteractionRayCast = GetNode<RayCast3D>("CameraPivotV/CameraSpringArm/RayCast3D");
+		InteractionLabel = GetNode<Label>("HUD/InteractionLabel");
 		parentName = GetParent().Name;
 	}
 
@@ -33,6 +40,15 @@ public partial class Camera : Node3D{
 	public override void _Process(double delta){
 		if(recenterCamera && parentName == "Longboard"){
 			RecenterCamera(delta);
+		}
+		if (InteractionRayCast.IsColliding()){
+			Node TargetObject = ((Node3D)InteractionRayCast.GetCollider()).GetParent();
+			InteractionLabel.Text = TargetObject.Name;
+			if (Input.IsActionJustPressed("Interact")){
+				EmitSignal(nameof(this.InteractedWith), TargetObject);
+			}
+		} else {
+			InteractionLabel.Text = "";
 		}
 	}
 

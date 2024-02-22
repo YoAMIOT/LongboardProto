@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://d3vbnmquou572"]
+[gd_scene load_steps=8 format=3 uid="uid://d3vbnmquou572"]
 
 [ext_resource type="Script" path="res://scripts/Longboard.cs" id="1_e7t43"]
+[ext_resource type="PackedScene" uid="uid://d0k1iiyyvm356" path="res://scenes/InteractionArea.tscn" id="2_clwn4"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_j8t35"]
 
@@ -138,13 +139,13 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = 256.0
 offset_top = 100.0
-offset_right = 336.0
-offset_bottom = 124.0
+offset_right = 416.0
+offset_bottom = 149.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(2, 2)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 3
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 35
 text = "999 Km/h"
 
 [node name="StaminaLabel" type="Label" parent="HUD"]
@@ -154,17 +155,24 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -296.0
+offset_left = -288.0
 offset_top = 100.0
-offset_right = -276.0
-offset_bottom = 124.0
+offset_right = -256.0
+offset_bottom = 149.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(2, 2)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 3
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 35
 text = "8"
 horizontal_alignment = 2
 
 [node name="RayCast3D" type="RayCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+hit_from_inside = true
+
+[node name="Marker3D" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.628123, 0.010068, 0)
+
+[node name="InteractionArea" parent="." instance=ExtResource("2_clwn4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0, 0)
