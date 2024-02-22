@@ -1,8 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://d3vbnmquou572"]
+[gd_scene load_steps=12 format=3 uid="uid://d3vbnmquou572"]
 
 [ext_resource type="Script" path="res://scripts/Entities/Longboard.cs" id="1_e7t43"]
 [ext_resource type="PackedScene" uid="uid://d0k1iiyyvm356" path="res://scenes/Systems/InteractionArea.tscn" id="2_clwn4"]
-[ext_resource type="PackedScene" uid="uid://bc6co6tn1occc" path="res://scenes/Systems/Camera.tscn" id="3_13krf"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_j8t35"]
 
@@ -240,6 +239,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.628123, 0.010068, 0)
 
 [node name="InteractionArea" parent="." instance=ExtResource("2_clwn4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0, 0)
-
-[node name="CameraPivotH" parent="." instance=ExtResource("3_13krf")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0.409438, 0)

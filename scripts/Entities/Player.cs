@@ -1,10 +1,8 @@
 using Godot;
 using System;
 
-public partial class Player : CharacterBody3D
-{
-	private const float SPEED = 5.0f;
-	private const float JUMP_VELOCITY = 4.5f;
+public partial class Player : CharacterBody3D {
+	private const float SPEED = 3f;
 	private const float LERP_VALUE = 0.15f;
 	private float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 	private Camera Camera;
@@ -25,11 +23,6 @@ public partial class Player : CharacterBody3D
 		// Add the gravity.
 		if (!IsOnFloor()){
 			velocity.Y -= gravity * (float)delta;
-		}
-
-		// Handle Jump.
-		if (Input.IsActionJustPressed("Spacebar") && IsOnFloor()){
-			velocity.Y = JUMP_VELOCITY;
 		}
 
 		Vector2 inputDir = Input.GetVector("Left", "Right", "Forward", "Backward");
