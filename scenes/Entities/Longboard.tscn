@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://d3vbnmquou572"]
 
-[ext_resource type="Script" path="res://scripts/Longboard.cs" id="1_e7t43"]
-[ext_resource type="PackedScene" uid="uid://d0k1iiyyvm356" path="res://scenes/InteractionArea.tscn" id="2_clwn4"]
+[ext_resource type="Script" path="res://scripts/Entities/Longboard.cs" id="1_e7t43"]
+[ext_resource type="PackedScene" uid="uid://d0k1iiyyvm356" path="res://scenes/Systems/InteractionArea.tscn" id="2_clwn4"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_j8t35"]
 

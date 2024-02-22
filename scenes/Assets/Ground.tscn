@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=3 uid="uid://cmowh0pcwm3j7"]
 
-[ext_resource type="PackedScene" uid="uid://d3vbnmquou572" path="res://scenes/Longboard.tscn" id="1_5fh8e"]
-[ext_resource type="PackedScene" uid="uid://cflgm4h4vtl2o" path="res://scenes/Player.tscn" id="2_45gu8"]
-[ext_resource type="PackedScene" uid="uid://b1qeagjc2tkfq" path="res://scenes/CubeMap.tscn" id="3_qgupx"]
+[ext_resource type="PackedScene" uid="uid://d3vbnmquou572" path="res://scenes/Entities/Longboard.tscn" id="1_5fh8e"]
+[ext_resource type="PackedScene" uid="uid://cflgm4h4vtl2o" path="res://scenes/Entities/Player.tscn" id="2_45gu8"]
+[ext_resource type="PackedScene" uid="uid://b1qeagjc2tkfq" path="res://scenes/Assets/CubeMap.tscn" id="3_qgupx"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5hkaq"]
 sky_top_color = Color(0.239216, 0.701961, 0.913725, 1)

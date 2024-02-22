@@ -1,8 +1,8 @@
 [gd_scene load_steps=19 format=3 uid="uid://cflgm4h4vtl2o"]
 
 [ext_resource type="Texture2D" uid="uid://bw2it7r26taxj" path="res://assets/meshes/Player_Untitled.png" id="1_khyv6"]
-[ext_resource type="Script" path="res://scripts/Player.cs" id="1_ocbnf"]
-[ext_resource type="PackedScene" uid="uid://bc6co6tn1occc" path="res://scenes/Camera.tscn" id="2_rb8mm"]
+[ext_resource type="Script" path="res://scripts/Entities/Player.cs" id="1_ocbnf"]
+[ext_resource type="PackedScene" uid="uid://bc6co6tn1occc" path="res://scenes/Systems/Camera.tscn" id="2_rb8mm"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dixo3"]
 resource_name = "WhiteCloth"

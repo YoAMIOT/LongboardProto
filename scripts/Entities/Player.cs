@@ -51,6 +51,6 @@ public partial class Player : CharacterBody3D
 	}
 
 	private void InteractWith(Node Target){
-		GD.Print(Target.Name);
+		//DO MAGIC HERE
 	}
 }
