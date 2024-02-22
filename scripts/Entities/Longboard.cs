@@ -8,8 +8,6 @@ public partial class Longboard : VehicleBody3D{
 	private const float BRAKE_POWER = 0.1f;
 	private const int MAX_THRUSTING_SPEED = 20;
 	private const int MAX_THRUST_STAMINA = 8;
-	private const int FOV_MIN = 103;
-	private const int FOV_MAX = 120;
 	private const int MAX_BALANCING_TIME = 20;
 	private VehicleWheel3D FrontRightWheel;
 	private VehicleWheel3D FrontLeftWheel;
