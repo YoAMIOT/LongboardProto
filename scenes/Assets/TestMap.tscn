@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://b1qeagjc2tkfq" path="res://scenes/Assets/CubeMap.tscn" id="1_uuqyo"]
 [ext_resource type="PackedScene" uid="uid://d3vbnmquou572" path="res://scenes/Entities/Longboard.tscn" id="2_q2d3h"]
-[ext_resource type="PackedScene" uid="uid://cflgm4h4vtl2o" path="res://scenes/Entities/Player.tscn" id="3_wlqts"]
+[ext_resource type="PackedScene" uid="uid://7jrwojyux522" path="res://scenes/Entities/Player.tscn" id="3_bmypb"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5hkaq"]
 sky_top_color = Color(0.239216, 0.701961, 0.913725, 1)
@@ -34,5 +34,5 @@ transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 90.9, 0)
 [node name="Longboard" parent="." instance=ExtResource("2_q2d3h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0209236, 0.184175, -59.5024)
 
-[node name="Player" parent="." instance=ExtResource("3_wlqts")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.996548, -58.3651)
+[node name="PlayerRigidTest" parent="." instance=ExtResource("3_bmypb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -60.7862)

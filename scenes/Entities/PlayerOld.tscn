@@ -1,8 +1,8 @@
-[gd_scene load_steps=19 format=3 uid="uid://7jrwojyux522"]
+[gd_scene load_steps=19 format=3 uid="uid://cflgm4h4vtl2o"]
 
-[ext_resource type="Script" path="res://scripts/Entities/Player.cs" id="1_t2apn"]
-[ext_resource type="Texture2D" uid="uid://bw2it7r26taxj" path="res://assets/meshes/Player_Untitled.png" id="1_w2lcg"]
-[ext_resource type="PackedScene" uid="uid://bc6co6tn1occc" path="res://scenes/Systems/Camera.tscn" id="2_rp4x8"]
+[ext_resource type="Script" path="res://scripts/Entities/PlayerOld.cs" id="1_ku2hi"]
+[ext_resource type="Texture2D" uid="uid://bw2it7r26taxj" path="res://assets/meshes/Player_Untitled.png" id="2_2v35e"]
+[ext_resource type="PackedScene" uid="uid://bc6co6tn1occc" path="res://scenes/Systems/Camera.tscn" id="3_tnmid"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dixo3"]
 resource_name = "WhiteCloth"
@@ -13,7 +13,7 @@ roughness = 0.5
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mel1o"]
 resource_name = "BlackCloth"
 cull_mode = 2
-albedo_texture = ExtResource("1_w2lcg")
+albedo_texture = ExtResource("2_2v35e")
 roughness = 0.5
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t0qwx"]
@@ -28,7 +28,7 @@ cull_mode = 2
 albedo_color = Color(0.906332, 0.332898, 0.36882, 1)
 roughness = 0.5
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_w6p06"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_5hjys"]
 resource_name = "Player_Cylinder_008"
 _surfaces = [{
 "aabb": AABB(-2.70642, -5.95611, -1.18674, 5.47754, 11.725, 2.3075),
@@ -92,7 +92,7 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="Skin" id="Skin_ru0nx"]
+[sub_resource type="Skin" id="Skin_0o7yp"]
 resource_name = "Skin"
 bind_count = 25
 bind/0/name = &"LowSpine"
@@ -696,6 +696,10 @@ _data = {
 "Run": SubResource("Animation_o4271")
 }
 
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_q4il8"]
+radius = 0.35
+height = 1.8
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_b25wx"]
 animation = &"Idle"
 
@@ -709,20 +713,14 @@ blend_point_1/node = SubResource("AnimationNodeAnimation_fy1oc")
 blend_point_1/pos = 1.0
 min_space = 0.0
 
-[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_dvl5e"]
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_qgwwq"]
 nodes/BlendSpace1D/node = SubResource("AnimationNodeBlendSpace1D_63orh")
 nodes/BlendSpace1D/position = Vector2(-140, 140)
 node_connections = [&"output", 0, &"BlendSpace1D"]
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0oh2y"]
-radius = 0.35
-height = 1.8
-
-[node name="Player" type="RigidBody3D"]
+[node name="PlayerOld" type="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
-mass = 55.0
-lock_rotation = true
-script = ExtResource("1_t2apn")
+script = ExtResource("1_ku2hi")
 
 [node name="Armature" type="Node3D" parent="."]
 transform = Transform3D(0.519878, 0, 0, 0, 0.519878, 0, 0, 0, 0.519878, 0, 0.0136155, 0)
@@ -733,21 +731,21 @@ bones/0/parent = -1
 bones/0/rest = Transform3D(1, 0, 0, 0, 0.997415, -0.0718507, 0, 0.0718507, 0.997415, 0, -0.193343, 0)
 bones/0/enabled = true
 bones/0/position = Vector3(0, -0.193343, 0)
-bones/0/rotation = Quaternion(0.0904043, 0.000109312, -4.54637e-05, 0.995905)
+bones/0/rotation = Quaternion(0.0905551, 6.46657e-05, -2.6895e-05, 0.995891)
 bones/0/scale = Vector3(1, 1, 1)
 bones/1/name = "HighSpine"
 bones/1/parent = 0
 bones/1/rest = Transform3D(1, -1.77636e-15, 2.38419e-07, -3.5073e-08, 0.989121, 0.147107, -2.35825e-07, -0.147107, 0.989121, 0, 0.570775, 4.65661e-09)
 bones/1/enabled = true
 bones/1/position = Vector3(0, 0.570775, 4.65661e-09)
-bones/1/rotation = Quaternion(-0.181036, 0.00161163, 0.000774888, 0.983475)
+bones/1/rotation = Quaternion(-0.18546, 0.000306404, 0.000147259, 0.982652)
 bones/1/scale = Vector3(1, 1, 1)
 bones/2/name = "Head"
 bones/2/parent = 1
 bones/2/rest = Transform3D(1, 1.96351e-08, 8.09877e-10, -1.96351e-08, 0.996603, 0.0823556, 8.09934e-10, -0.0823556, 0.996603, -5.09099e-18, 0.542055, 7.47193e-09)
 bones/2/enabled = true
 bones/2/position = Vector3(-5.09099e-18, 0.542055, 7.47193e-09)
-bones/2/rotation = Quaternion(0.0175216, 0.011659, 0.00406312, 0.99977)
+bones/2/rotation = Quaternion(0.0204565, 0.0125806, 0.00431778, 0.999702)
 bones/2/scale = Vector3(1, 1, 1)
 bones/3/name = "Shoulder.L"
 bones/3/parent = 1
@@ -761,14 +759,14 @@ bones/4/parent = 3
 bones/4/rest = Transform3D(0.565687, -0.823065, 0.0506217, 0.822223, 0.567656, 0.0414193, -0.0628265, 0.018192, 0.997859, 6.66895e-08, 0.308483, -9.31323e-10)
 bones/4/enabled = true
 bones/4/position = Vector3(6.66895e-08, 0.308483, -9.31323e-10)
-bones/4/rotation = Quaternion(-0.00221052, 0.0433952, 0.574208, 0.817555)
+bones/4/rotation = Quaternion(-0.00531732, 0.0405247, 0.577233, 0.815556)
 bones/4/scale = Vector3(1, 1, 1)
 bones/5/name = "LowerArm.L"
 bones/5/parent = 4
 bones/5/rest = Transform3D(0.989944, 0.129625, 0.0566421, -0.141251, 0.883994, 0.445648, 0.00769606, -0.449168, 0.893414, 3.93538e-08, 0.450313, 1.86265e-09)
 bones/5/enabled = true
 bones/5/position = Vector3(3.93538e-08, 0.450313, 1.86265e-09)
-bones/5/rotation = Quaternion(-0.121279, 0.0416787, -0.0588076, 0.989998)
+bones/5/rotation = Quaternion(-0.120954, 0.04144, -0.0632185, 0.989776)
 bones/5/scale = Vector3(1, 1, 1)
 bones/6/name = "Hand.L"
 bones/6/parent = 5
@@ -810,14 +808,14 @@ bones/11/parent = 10
 bones/11/rest = Transform3D(0.565687, 0.823065, -0.0506217, -0.822223, 0.567656, 0.0414193, 0.0628265, 0.018192, 0.997859, 6.00009e-08, 0.308483, -1.86265e-09)
 bones/11/enabled = true
 bones/11/position = Vector3(6.00009e-08, 0.308483, -1.86265e-09)
-bones/11/rotation = Quaternion(-0.00221052, -0.0433952, -0.574208, 0.817555)
+bones/11/rotation = Quaternion(-0.00531732, -0.0405247, -0.577233, 0.815556)
 bones/11/scale = Vector3(1, 1, 1)
 bones/12/name = "LowerArm.R"
 bones/12/parent = 11
 bones/12/rest = Transform3D(0.989944, -0.129625, -0.0566421, 0.141251, 0.883994, 0.445648, -0.0076961, -0.449168, 0.893414, -5.33263e-08, 0.450313, -4.65661e-09)
 bones/12/enabled = true
 bones/12/position = Vector3(-5.33263e-08, 0.450313, -4.65661e-09)
-bones/12/rotation = Quaternion(-0.121282, -0.0416803, 0.0587764, 0.989999)
+bones/12/rotation = Quaternion(-0.120954, -0.04144, 0.0632185, 0.989776)
 bones/12/scale = Vector3(1, 1, 1)
 bones/13/name = "Hand.R"
 bones/13/parent = 12
@@ -905,11 +903,8 @@ bones/24/rotation = Quaternion(-7.57634e-08, -2.20765e-07, 0.750531, 0.660835)
 bones/24/scale = Vector3(1, 1, 1)
 
 [node name="PlayerNew" type="MeshInstance3D" parent="Armature/Skeleton3D"]
-mesh = SubResource("ArrayMesh_w6p06")
-skin = SubResource("Skin_ru0nx")
-
-[node name="CameraPivotH" parent="." instance=ExtResource("2_rp4x8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.531363, 0)
+mesh = SubResource("ArrayMesh_5hjys")
+skin = SubResource("Skin_0o7yp")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -917,14 +912,17 @@ libraries = {
 }
 speed_scale = 0.5
 
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_q4il8")
+
+[node name="CameraPivotH" parent="." instance=ExtResource("3_tnmid")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.531363, 0)
+
 [node name="AnimationTree" type="AnimationTree" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_7q7vc")
 }
-tree_root = SubResource("AnimationNodeBlendTree_dvl5e")
+tree_root = SubResource("AnimationNodeBlendTree_qgwwq")
 anim_player = NodePath("../AnimationPlayer")
 parameters/BlendSpace1D/blend_position = 0
-
-[node name="Collision" type="CollisionShape3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
-shape = SubResource("CapsuleShape3D_0oh2y")
