@@ -4,28 +4,24 @@ using System;
 public partial class Player : CharacterBody3D {
 	private const float SPEED = 3f;
 	private const float LERP_VALUE = 0.15f;
-	private float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 	private Camera Camera;
 	private Node3D Armature;
 	private AnimationTree AnimTree;
 	private Node3D LastInteractedObject;
 	private CollisionShape3D Collision;
-	private bool onBoard = false; 
-
+	private float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
+	public bool onBoard = false; 
 
 	public override void _Ready(){
 		Camera = GetNode<Camera>("CameraPivotH");
 		Armature = GetNode<Node3D>("Armature");
 		AnimTree = GetNode<AnimationTree>("AnimationTree");
 		Collision = GetNode<CollisionShape3D>("Collision");
-		Camera.InteractedWith += InteractWith;
 	}
 
 	public override void _PhysicsProcess(double delta){
+		Vector3 velocity = Velocity;
 		if (!onBoard){
-			Vector3 velocity = Velocity;
-
-			// Add the gravity.
 			if (!IsOnFloor()){
 				velocity.Y -= gravity * (float)delta;
 			}
@@ -41,22 +37,23 @@ public partial class Player : CharacterBody3D {
 				velocity.X = Mathf.Lerp(velocity.X, 0f, LERP_VALUE);
 				velocity.Z = Mathf.Lerp(velocity.Z, 0f, LERP_VALUE);
 			}
-
-			AnimTree.Set("parameters/BlendSpace1D/blend_position", velocity.Length() /SPEED);
-
-			Velocity = velocity;
-			MoveAndSlide();
 		} else {
+			velocity = new Vector3();
 			Node3D LongboardMarker = (Node3D)LastInteractedObject.GetChild(0);
+			Armature.Rotation = new Vector3(LongboardMarker.Rotation.X, Mathf.LerpAngle(Armature.Rotation.Y, LongboardMarker.Rotation.Y - Mathf.DegToRad(90f), LERP_VALUE), LongboardMarker.Rotation.Z);
 			this.GlobalTransform = LongboardMarker.GlobalTransform;
 		}
+		AnimTree.Set("parameters/BlendSpace1D/blend_position", velocity.Length() /SPEED);
+		Velocity = velocity;
+		MoveAndSlide();
 	}
 
-	private void InteractWith(Node3D Target){
+	public void InteractWith(Node3D Target){
 		LastInteractedObject = Target;
 		if (LastInteractedObject.GetType() == typeof(Longboard)){
 			onBoard = true;
 			Collision.Disabled = true;
+			Target.Call("SetInUse", true);
 		}
 	}
 }

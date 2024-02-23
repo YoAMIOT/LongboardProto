@@ -15,13 +15,15 @@ public partial class Longboard : VehicleBody3D{
 	private MeshInstance3D Board;
 	private Timer ThrustCooldown;
 	private Label Speedometer;
+	private RayCast3D RayCast;
+	private ProgressBar StaminaBar;
+	private Timer BackBalancingCooldown;
+	private Control Hud;
 	private float MouseSensivity = 0.05f;
 	private bool canThrust = true;
 	private bool hasStamina = true;
-	private RayCast3D RayCast;
-	private Timer BackBalancingCooldown;
-	private ProgressBar StaminaBar;
 	private int timeBalancing = 0;
+	private bool isInUse = false;
 
 	public override void _Ready(){
 		BackBalancingCooldown = GetNode<Timer>("BackBalancingCooldown");
@@ -32,50 +34,53 @@ public partial class Longboard : VehicleBody3D{
 		Board = GetNode<MeshInstance3D>("Board");
 		ThrustCooldown = GetNode<Timer>("ThrustCooldown");
 		ThrustCooldown.Timeout += ResetThrustCapability;
-		Speedometer = GetNode<Label>("HUD/Speedometer");
 		RayCast = GetNode<RayCast3D>("RayCast3D");
+		Hud = GetNode<Control>("HUD");
+		Speedometer = GetNode<Label>("HUD/Speedometer");
 		StaminaBar = GetNode<ProgressBar>("HUD/StaminaBar");
 		StaminaBar.MaxValue = ThrustCooldown.WaitTime;
 	}
 
     public override void _PhysicsProcess(double delta){
-		bool isFrontWheelsTouchingGround = FrontLeftWheel.IsInContact() || FrontRightWheel.IsInContact();
-		bool isBackWheelsTouchingGround = BackLeftWheel.IsInContact() || BackRightWheel.IsInContact();
-		float steeringAxis = Input.GetAxis("Right","Left");
-		float steeringSpeed = (float)delta * 0.4f;
-		int speed = GetCurrentSpeed();
+		if (isInUse){
+			bool isFrontWheelsTouchingGround = FrontLeftWheel.IsInContact() || FrontRightWheel.IsInContact();
+			bool isBackWheelsTouchingGround = BackLeftWheel.IsInContact() || BackRightWheel.IsInContact();
+			float steeringAxis = Input.GetAxis("Right","Left");
+			float steeringSpeed = (float)delta * 0.4f;
+			int speed = GetCurrentSpeed();
 
-		//Weigh Distribution
-		ManageWeighDistribution(isFrontWheelsTouchingGround, isBackWheelsTouchingGround, delta);
+			//Weigh Distribution
+			ManageWeighDistribution(isFrontWheelsTouchingGround, isBackWheelsTouchingGround, delta);
 
-		//Thrust management
-		if (Input.IsActionPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && hasStamina && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
-			ThrustCooldown.Start();
-			canThrust = false;
-		} else {
-			this.EngineForce = 0;
+			//Thrust management
+			if (Input.IsActionPressed("Forward") && speed < MAX_THRUSTING_SPEED && canThrust && hasStamina && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
+				ThrustCooldown.Start();
+				canThrust = false;
+			} else {
+				this.EngineForce = 0;
+			}
+			if (ThrustCooldown.TimeLeft > 1 && speed < MAX_THRUSTING_SPEED && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
+				this.EngineForce = ENGINE_POWER;
+			}
+
+			//Brake management
+			if (Input.IsActionPressed("Backward") && !Input.IsActionPressed("Forward") && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
+				this.Brake = BRAKE_POWER;
+			} else if (speed >= 60){
+				this.Brake = 0.06f;
+			} else {
+				this.Brake = 0;
+			}
+
+			//Steering
+			if (!isFrontWheelsTouchingGround || !isBackWheelsTouchingGround){
+				steeringAxis = 0;
+			}
+			ManageSteering(steeringAxis, steeringSpeed);
+
+			//Update stamina bar
+			UpdateStaminaBar();
 		}
-		if (ThrustCooldown.TimeLeft > 1 && speed < MAX_THRUSTING_SPEED && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
-			this.EngineForce = ENGINE_POWER;
-		}
-
-		//Brake management
-		if (Input.IsActionPressed("Backward") && !Input.IsActionPressed("Forward") && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
-			this.Brake = BRAKE_POWER;
-		} else if (speed >= 60){
-			this.Brake = 0.06f;
-		} else {
-			this.Brake = 0;
-		}
-
-		//Steering
-		if (!isFrontWheelsTouchingGround || !isBackWheelsTouchingGround){
-			steeringAxis = 0;
-		}
-		ManageSteering(steeringAxis, steeringSpeed);
-
-		//Update stamina bar
-		UpdateStaminaBar();
 	}
 
 	private void ManageSteering(float steeringAxis, float steeringSpeed){
@@ -136,5 +141,10 @@ public partial class Longboard : VehicleBody3D{
 
 	private void UpdateStaminaBar(){
 		StaminaBar.Value = ThrustCooldown.TimeLeft;
+	}
+
+	public void SetInUse(bool inUse){
+		this.isInUse = inUse;
+		Hud.Visible = inUse;
 	}
 }

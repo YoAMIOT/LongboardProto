@@ -190,6 +190,7 @@ wait_time = 0.5
 one_shot = true
 
 [node name="HUD" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
