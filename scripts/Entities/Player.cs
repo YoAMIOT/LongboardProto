@@ -10,7 +10,8 @@ public partial class Player : CharacterBody3D {
 	private Node3D LastInteractedObject;
 	private CollisionShape3D Collision;
 	private float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
-	public bool onBoard = false; 
+	public bool onBoard = false;
+	private bool canInteract = true;
 
 	public override void _Ready(){
 		Camera = GetNode<Camera>("CameraPivotH");
@@ -42,18 +43,33 @@ public partial class Player : CharacterBody3D {
 			Node3D LongboardMarker = (Node3D)LastInteractedObject.GetChild(0);
 			Armature.Rotation = new Vector3(LongboardMarker.Rotation.X, Mathf.LerpAngle(Armature.Rotation.Y, LongboardMarker.Rotation.Y - Mathf.DegToRad(90f), LERP_VALUE), LongboardMarker.Rotation.Z);
 			this.GlobalTransform = LongboardMarker.GlobalTransform;
+			if (Input.IsActionJustPressed("Interact") && canInteract){
+				InteractWith(LastInteractedObject);
+			}
 		}
 		AnimTree.Set("parameters/BlendSpace1D/blend_position", velocity.Length() /SPEED);
 		Velocity = velocity;
 		MoveAndSlide();
+		GD.Print(onBoard);
 	}
 
-	public void InteractWith(Node3D Target){
+	public async void InteractWith(Node3D Target){
 		LastInteractedObject = Target;
 		if (LastInteractedObject.GetType() == typeof(Longboard)){
-			onBoard = true;
-			Collision.Disabled = true;
-			Target.Call("SetInUse", true);
+			if(!onBoard){
+				canInteract = false;
+				Collision.Disabled = true;
+				Target.Call("SetInUse", true);
+				onBoard = true;
+				await ToSignal(GetTree().CreateTimer(0.5f), "timeout");
+				canInteract = true;
+			} else {
+				Collision.Disabled = false;
+				Target.Call("SetInUse", false);
+				//await ToSignal(GetTree().CreateTimer(0.5f), "timeout");
+				this.GlobalRotation = new Vector3();
+				onBoard = false;
+			}
 		}
 	}
 }
