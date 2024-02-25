@@ -64,7 +64,7 @@ public partial class Player : RigidBody3D {
 				await ToSignal(GetTree().CreateTimer(0.1f), "timeout");
 				canInteract = true;
 			} else {
-				Collision.Disabled = false;
+				Collision.SetDeferred("disabled", false);
 				Target.Call("SetInUse", false);
 				Node3D LongboardExitMarker = (Node3D)Target.GetChild(1);
 				this.GlobalPosition = LongboardExitMarker.GlobalPosition;
