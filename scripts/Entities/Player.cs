@@ -49,8 +49,14 @@ public partial class Player : RigidBody3D {
 			}
 		}
 		AnimTree.Set("parameters/BlendSpace1D/blend_position", velocity.Length() /SPEED);
+
+		Vector3 upDirection = -state.TotalGravity.Normalized();
+   		Quaternion currentRot = new Quaternion(Transform.Basis);
+    	Quaternion targetRot = new Quaternion(Vector3.Up, upDirection);
+    	Quaternion newRot = currentRot.Slerp(targetRot, state.Step * 3);
+    	this.Basis = new Basis(newRot);
+
 		LinearVelocity = velocity;
-		GD.Print(state.TotalGravity);
     }
 
 		public async void InteractWith(Node3D Target){
