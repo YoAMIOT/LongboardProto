@@ -25,9 +25,8 @@ public partial class Player : RigidBody3D {
 			Node3D LongboardMarker = (Node3D)LastInteractedObject.GetChild(0);
 			Armature.Rotation = new Vector3(LongboardMarker.Rotation.X, Mathf.LerpAngle(Armature.Rotation.Y, LongboardMarker.Rotation.Y - Mathf.DegToRad(90f), LERP_VALUE), LongboardMarker.Rotation.Z);
 			this.GlobalTransform = LongboardMarker.GlobalTransform;
-
 		}
-    }
+	}
 
     public override void _IntegrateForces(PhysicsDirectBodyState3D state){
         Vector3 velocity = LinearVelocity;
@@ -51,6 +50,7 @@ public partial class Player : RigidBody3D {
 		}
 		AnimTree.Set("parameters/BlendSpace1D/blend_position", velocity.Length() /SPEED);
 		LinearVelocity = velocity;
+		GD.Print(state.TotalGravity);
     }
 
 		public async void InteractWith(Node3D Target){
