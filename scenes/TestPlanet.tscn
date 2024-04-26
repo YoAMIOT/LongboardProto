@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3 uid="uid://xgetre7obx86"]
+
+[ext_resource type="PackedScene" uid="uid://d3vbnmquou572" path="res://scenes/Entities/Longboard.tscn" id="1_b5yhe"]
+[ext_resource type="PackedScene" uid="uid://ch3sqejmtsptc" path="res://scenes/ramp.tscn" id="2_tkuuw"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_3l130"]
+
+[sub_resource type="Sky" id="Sky_qeiqq"]
+sky_material = SubResource("ProceduralSkyMaterial_3l130")
+
+[sub_resource type="Environment" id="Environment_mgabj"]
+background_mode = 2
+sky = SubResource("Sky_qeiqq")
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 1, 1)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Longboard" parent="." instance=ExtResource("1_b5yhe")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.55877, 1.73547, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_mgabj")
+
+[node name="Ramp" parent="." instance=ExtResource("2_tkuuw")]
+
+[node name="Ramp2" parent="." instance=ExtResource("2_tkuuw")]
+transform = Transform3D(19.6962, 0.0868241, 0, -3.47296, 0.492404, 0, 0, 0, 8, 39.3098, -6.93838, 0)
+
+[node name="Ramp3" parent="." instance=ExtResource("2_tkuuw")]
+transform = Transform3D(12.4829, 0.0871866, -6.09283, -2.37586, 0.492312, 1.02466, 15.4446, 0.00526579, 5.08208, 52.922, -9.4472, 4.64348)
+
+[node name="Ramp6" parent="." instance=ExtResource("2_tkuuw")]
+transform = Transform3D(19.6962, 0.0868241, -3.0103e-09, -3.47295, 0.492401, -0.0294611, -0.0127897, 0.00181334, 7.99994, 63.1038, -11.3519, 11.9372)
+
+[node name="Ramp4" parent="." instance=ExtResource("2_tkuuw")]
+
+[node name="Ramp5" parent="." instance=ExtResource("2_tkuuw")]
+transform = Transform3D(19.6962, 0.0868241, 0, -3.47296, 0.492404, 0, 0, 0, 8, 19.6422, -3.46686, 0)
+
+[node name="Ramp7" parent="." instance=ExtResource("2_tkuuw")]
+transform = Transform3D(13.9863, 0.090868, 5.5306, -2.46334, 0.491655, -1.07122, -14.0825, 0.00424572, 5.68022, 116.343, -20.8408, 6.2255)
+
+[node name="Ramp8" parent="." instance=ExtResource("2_tkuuw")]
+transform = Transform3D(19.6962, 0.0868241, 2.44315e-09, -3.47287, 0.492391, -0.058084, -0.0252154, 0.0035751, 7.99979, 82.682, -14.8202, 11.9781)
+
+[node name="Ramp9" parent="." instance=ExtResource("2_tkuuw")]
+transform = Transform3D(19.6962, 0.0868241, -2.22817e-09, -3.47287, 0.492391, -0.0589218, -0.0255792, 0.00362667, 7.99978, 102.324, -18.2984, 11.9781)
