@@ -12,7 +12,7 @@ sky_material = SubResource("ProceduralSkyMaterial_3l130")
 background_mode = 2
 sky = SubResource("Sky_qeiqq")
 ambient_light_source = 3
-ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_color = Color(1, 0.65098, 0.580392, 1)
 
 [node name="Node3D" type="Node3D"]
 
@@ -46,3 +46,9 @@ transform = Transform3D(19.6962, 0.0868241, 2.44315e-09, -3.47287, 0.492391, -0.
 
 [node name="Ramp9" parent="." instance=ExtResource("2_tkuuw")]
 transform = Transform3D(19.6962, 0.0868241, -2.22817e-09, -3.47287, 0.492391, -0.0589218, -0.0255792, 0.00362667, 7.99978, 102.324, -18.2984, 11.9781)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.841765, 0.538585, 0.0368454, -0.374941, 0.534168, 0.757683, 0.388395, -0.651606, 0.651581, 0, 0, 0)
+light_color = Color(0.827451, 0.662745, 0.537255, 1)
+shadow_enabled = true
+sky_mode = 1
