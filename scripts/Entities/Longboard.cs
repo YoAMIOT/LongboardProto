@@ -58,6 +58,18 @@ public partial class Longboard : VehicleBody3D{
 			this.EngineForce = ENGINE_POWER;
 		}
 
+		if (Input.IsActionPressed("Spacebar") && speed > 20){
+			FrontLeftWheel.WheelFrictionSlip = 0.8f;
+			FrontRightWheel.WheelFrictionSlip = 0.8f;
+			BackLeftWheel.WheelFrictionSlip = 0.6f;
+			BackRightWheel.WheelFrictionSlip = 0.6f;
+		} else if (Input.IsActionJustReleased("Spacebar")){
+			FrontLeftWheel.WheelFrictionSlip = 2f;
+			FrontRightWheel.WheelFrictionSlip = 2f;
+			BackLeftWheel.WheelFrictionSlip = 2f;
+			BackRightWheel.WheelFrictionSlip = 2f;
+		}
+
 		//Brake management
 		if (Input.IsActionPressed("Backward") && !Input.IsActionPressed("Forward") && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
 			this.Brake = BRAKE_POWER;
