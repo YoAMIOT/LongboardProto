@@ -22,6 +22,7 @@ public partial class Longboard : VehicleBody3D{
 	private Camera3D Camera;
 	private Marker3D CameraMarker;
 	private Node3D SlideParticles;
+	private Marker3D DirectionMarker;
 	private bool canThrust = true;
 	private bool hasStamina = true;
 
@@ -40,6 +41,7 @@ public partial class Longboard : VehicleBody3D{
 		StaminaBar = GetNode<ProgressBar>("HUD/StaminaBar");
 		StaminaBar.MaxValue = ThrustCooldown.WaitTime;
 		SlideParticles = GetNode<Node3D>("SlideParticles");
+		DirectionMarker = GetNode<Marker3D>("DirectionMarker");
 	}
 
     public override void _PhysicsProcess(double delta){
@@ -60,38 +62,61 @@ public partial class Longboard : VehicleBody3D{
 			this.EngineForce = ENGINE_POWER;
 		}
 
-		if (Input.IsActionPressed("Spacebar") && speed > 20){
+		if (Input.IsActionPressed("Spacebar") && speed > MAX_THRUSTING_SPEED){
 			FrontLeftWheel.WheelFrictionSlip = 0.8f;
 			FrontRightWheel.WheelFrictionSlip = 0.8f;
 			BackLeftWheel.WheelFrictionSlip = 0.6f;
 			BackRightWheel.WheelFrictionSlip = 0.6f;
-			foreach (GpuParticles3D particles in SlideParticles.GetChildren()){
-				particles.Emitting = true;
-			}
-			//TODO LEAVE TRAIL BEHIND WHEELS
 		} else if (Input.IsActionJustReleased("Spacebar")){
 			FrontLeftWheel.WheelFrictionSlip = 2f;
 			FrontRightWheel.WheelFrictionSlip = 2f;
 			BackLeftWheel.WheelFrictionSlip = 2f;
 			BackRightWheel.WheelFrictionSlip = 2f;
+		}
+
+		//Brake management
+		if (Input.IsActionPressed("Backward") && !Input.IsActionPressed("Forward")){
+			this.Brake = BRAKE_POWER;
+		} else if (speed >= MAX_SPEED){
+			this.Brake = 0.6f;
+		} else {
+			this.Brake = 0;
+		}
+		
+		float sideVelocity =  this.Transform.Basis.Z.Dot(this.LinearVelocity.Normalized()) * this.LinearVelocity.Length();
+
+		if (sideVelocity > 0.8 || sideVelocity < -0.8){
+			if (FrontLeftWheel.IsInContact()){
+				SlideParticles.GetNode<GpuParticles3D>("FrontLeft").Emitting = true;
+			} else {
+				SlideParticles.GetNode<GpuParticles3D>("FrontLeft").Emitting = false;
+			}
+
+			if (FrontRightWheel.IsInContact()){
+				SlideParticles.GetNode<GpuParticles3D>("FrontRight").Emitting = true;
+			} else {
+				SlideParticles.GetNode<GpuParticles3D>("FrontRight").Emitting = false;
+			}
+
+			if (BackLeftWheel.IsInContact()){
+				SlideParticles.GetNode<GpuParticles3D>("BackLeft").Emitting = true;
+			} else {
+				SlideParticles.GetNode<GpuParticles3D>("BackLeft").Emitting = false;
+			}
+
+			if (FrontLeftWheel.IsInContact()){
+				SlideParticles.GetNode<GpuParticles3D>("BackRight").Emitting = true;
+			} else {
+				SlideParticles.GetNode<GpuParticles3D>("BackRight").Emitting = false;
+			}
+
+		} else {
 			foreach (GpuParticles3D particles in SlideParticles.GetChildren()){
 				particles.Emitting = false;
 			}
 		}
 
-		//Brake management
-		if (Input.IsActionPressed("Backward") && !Input.IsActionPressed("Forward") && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
-			this.Brake = BRAKE_POWER;
-		} else if (speed >= MAX_SPEED){
-			this.Brake = 0.3f;
-		} else {
-			this.Brake = 0;
-		}
-
 		//Steering
-		if (!isFrontWheelsTouchingGround || !isBackWheelsTouchingGround){
-			steeringAxis = 0;
-		}
 		ManageSteering(steeringAxis, steeringSpeed);
 
 		ManageCameraMovements();

@@ -230,16 +230,25 @@ transform = Transform3D(-4.37114e-08, 0.634731, -0.772734, 0, 0.772734, 0.634731
 
 [node name="SlideParticles" type="Node3D" parent="."]
 
-[node name="WheelsTrailL" parent="SlideParticles" instance=ExtResource("2_yjv2t")]
+[node name="BackLeft" parent="SlideParticles" instance=ExtResource("2_yjv2t")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.096, -0.13)
 emitting = false
-fixed_fps = 60
 interpolate = false
-fract_delta = false
 
-[node name="WheelsTrailR" parent="SlideParticles" instance=ExtResource("2_yjv2t")]
+[node name="BackRight" parent="SlideParticles" instance=ExtResource("2_yjv2t")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.096, 0.13)
 emitting = false
-fixed_fps = 60
 interpolate = false
-fract_delta = false
+
+[node name="FrontLeft" parent="SlideParticles" instance=ExtResource("2_yjv2t")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.92, -0.096, -0.13)
+emitting = false
+interpolate = false
+
+[node name="FrontRight" parent="SlideParticles" instance=ExtResource("2_yjv2t")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.92, -0.096, 0.13)
+emitting = false
+interpolate = false
+
+[node name="DirectionMarker" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.31092, 0, 0)

@@ -1,6 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cu3y7oafn6m4q"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_xc0lm"]
+emission_shape_scale = Vector3(0, 0, 0)
 gravity = Vector3(0, 0, 0)
 collision_mode = 1
 collision_friction = 1.0
@@ -15,7 +16,7 @@ orientation = 1
 
 [node name="WheelsTrail" type="GPUParticles3D"]
 cast_shadow = 0
-amount = 200
+amount = 60
 sub_emitter = NodePath(".")
 fixed_fps = 60
 fract_delta = false
