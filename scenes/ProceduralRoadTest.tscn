@@ -1,0 +1,61 @@
+[gd_scene load_steps=8 format=3 uid="uid://unt0odyx4tog"]
+
+[ext_resource type="PackedScene" uid="uid://d3vbnmquou572" path="res://scenes/Entities/Longboard.tscn" id="1_1cawh"]
+[ext_resource type="Texture2D" uid="uid://bhbk7ab46e4ls" path="res://assets/texture/roadRota.png" id="1_2t31j"]
+
+[sub_resource type="Curve3D" id="Curve3D_qivon"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -2.49704, -0.0857394, -2.53982, -2, 0, 2, 2, 0, -2, 4.71429, -0.142857, -6.57143, -3.35314, 0.230592, 1.12199, 3.35314, -0.230592, -1.12199, 18.2857, -1.42857, -13.5714, -1.5, 0.4, 0, 1.5, -0.4, 0, 24.8571, -2.57143, -9.71429, -3.2, 0.6, 0.4, 3.2, -0.6, -0.4, 30.7143, -3.71429, -10, -0.338081, 0.238487, 2.99711, 0.338081, -0.238487, -2.99711, 28.4249, -4.02353, -16.5514, -2.68475, 0.619545, 0.0608063, 2.68475, -0.619545, -0.0608063, 32.5714, -5.28571, -19.5714, -0.360424, 0.145215, -1.06898, 0.360424, -0.145215, 1.06898, 36.1161, -6.21804, -15.589, -1.57221, 0.815338, 0.663907, 1.57221, -0.815338, -0.663907, 40.6927, -7.7323, -11.745, -1.81082, 0.573501, 1.1081, 1.81082, -0.573501, -1.1081, 46.8571, -10, -14.8571, -0.42062, 0.46964, 2.29653, 0.42062, -0.46964, -2.29653, 45, -11.1429, -21.5714, -0.553253, 0.494572, 0.638597, 0.553253, -0.494572, -0.638597, 46.942, -12.9636, -27.8724, -4.80721, -1.47004, -12.3514, 4.80721, 1.47004, 12.3514, 56.4503, -13.555, -20.9337, 5.661, -0.0985023, 1.50594, -5.661, 0.0985023, -1.50594, 0.714286, 0, 3.57143, -2.8861, 0.227642, 1.17011, 2.8861, -0.227642, -1.17011, -2.88571, -0.0571429, -2.35714),
+"tilts": PackedFloat32Array(0, 0, 0.04, -0.14, -0.215, 0, 0.21, 0.07, -0.335, -0.502, -0.41, -0.22, 0, -0.34191, -0.355)
+}
+point_count = 15
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qqb73"]
+albedo_texture = ExtResource("1_2t31j")
+anisotropy = -1.0
+uv1_scale = Vector3(1, 7.74, 0)
+uv1_offset = Vector3(0, 2.05, 0)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_qnmae"]
+
+[sub_resource type="Sky" id="Sky_ngdod"]
+sky_material = SubResource("ProceduralSkyMaterial_qnmae")
+
+[sub_resource type="Environment" id="Environment_dcpr0"]
+background_mode = 2
+sky = SubResource("Sky_ngdod")
+ambient_light_source = 3
+ambient_light_color = Color(1, 0.65098, 0.580392, 1)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Path3D" type="Path3D" parent="."]
+transform = Transform3D(7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0)
+curve = SubResource("Curve3D_qivon")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="."]
+use_collision = true
+polygon = PackedVector2Array(0, 0, -0.00172503, 0.105065, 0.999668, 0.104218, 1, 0)
+mode = 2
+path_node = NodePath("../Path3D")
+path_interval_type = 0
+path_interval = 0.1
+path_simplify_angle = 0.0
+path_rotation = 2
+path_local = false
+path_continuous_u = true
+path_u_distance = 0.0
+path_joined = true
+material = SubResource("StandardMaterial3D_qqb73")
+
+[node name="Longboard" parent="." instance=ExtResource("1_1cawh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.1705, 1.56746, -2.38911)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_dcpr0")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.841765, 0.538585, 0.0368454, -0.374941, 0.534168, 0.757683, 0.388395, -0.651606, 0.651581, 0, 0, 0)
+light_color = Color(0.827451, 0.662745, 0.537255, 1)
+shadow_enabled = true
+sky_mode = 1

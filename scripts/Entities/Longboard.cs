@@ -4,12 +4,12 @@ using System;
 public partial class Longboard : VehicleBody3D{
 	private const float MAX_STEER_ANGLE= 0.08f;
 	private const float MAX_BOARD_ANGLE = MAX_STEER_ANGLE * -2;
-	private const float ENGINE_POWER = 5;
-	private const float BRAKE_POWER = 0.1f;
-	private const int MAX_THRUSTING_SPEED = 20;
+	private const float ENGINE_POWER = 70;
+	private const float BRAKE_POWER = 1f;
+	private const int MAX_THRUSTING_SPEED = 25;
 	private const int MIN_FOV = 45;
 	private const int MAX_FOV = 70;
-	private const int MAX_SPEED = 60;	
+	private const int MAX_SPEED = 45;	
 	private VehicleWheel3D FrontRightWheel;
 	private VehicleWheel3D FrontLeftWheel;
 	private VehicleWheel3D BackRightWheel;
@@ -21,6 +21,7 @@ public partial class Longboard : VehicleBody3D{
 	private Control Hud;
 	private Camera3D Camera;
 	private Marker3D CameraMarker;
+	private Node3D SlideParticles;
 	private bool canThrust = true;
 	private bool hasStamina = true;
 
@@ -38,13 +39,14 @@ public partial class Longboard : VehicleBody3D{
 		Speedometer = GetNode<Label>("HUD/Speedometer");
 		StaminaBar = GetNode<ProgressBar>("HUD/StaminaBar");
 		StaminaBar.MaxValue = ThrustCooldown.WaitTime;
+		SlideParticles = GetNode<Node3D>("SlideParticles");
 	}
 
     public override void _PhysicsProcess(double delta){
 		bool isFrontWheelsTouchingGround = FrontLeftWheel.IsInContact() || FrontRightWheel.IsInContact();
 		bool isBackWheelsTouchingGround = BackLeftWheel.IsInContact() || BackRightWheel.IsInContact();
 		float steeringAxis = Input.GetAxis("Right","Left");
-		float steeringSpeed = (float)delta * 0.4f;
+		float steeringSpeed = (float)delta * 0.15f;
 		int speed = GetCurrentSpeed();
 
 		//Thrust management
@@ -63,18 +65,25 @@ public partial class Longboard : VehicleBody3D{
 			FrontRightWheel.WheelFrictionSlip = 0.8f;
 			BackLeftWheel.WheelFrictionSlip = 0.6f;
 			BackRightWheel.WheelFrictionSlip = 0.6f;
+			foreach (GpuParticles3D particles in SlideParticles.GetChildren()){
+				particles.Emitting = true;
+			}
+			//TODO LEAVE TRAIL BEHIND WHEELS
 		} else if (Input.IsActionJustReleased("Spacebar")){
 			FrontLeftWheel.WheelFrictionSlip = 2f;
 			FrontRightWheel.WheelFrictionSlip = 2f;
 			BackLeftWheel.WheelFrictionSlip = 2f;
 			BackRightWheel.WheelFrictionSlip = 2f;
+			foreach (GpuParticles3D particles in SlideParticles.GetChildren()){
+				particles.Emitting = false;
+			}
 		}
 
 		//Brake management
 		if (Input.IsActionPressed("Backward") && !Input.IsActionPressed("Forward") && isFrontWheelsTouchingGround && isBackWheelsTouchingGround){
 			this.Brake = BRAKE_POWER;
 		} else if (speed >= MAX_SPEED){
-			this.Brake = 0.06f;
+			this.Brake = 0.3f;
 		} else {
 			this.Brake = 0;
 		}
@@ -102,8 +111,8 @@ public partial class Longboard : VehicleBody3D{
 	}
 
 	private void ManageCameraMovements(){
-		Camera.GlobalPosition = Camera.GlobalPosition.Lerp(CameraMarker.GlobalPosition, 0.2f);
-		Camera.GlobalRotation = CameraMarker.GlobalRotation.Lerp(CameraMarker.GlobalRotation, 0.05f);
+		Camera.GlobalPosition = Camera.GlobalPosition.Lerp(CameraMarker.GlobalPosition, 0.15f);
+		Camera.GlobalRotation = CameraMarker.GlobalRotation.Lerp(CameraMarker.GlobalRotation, 0.03f);
 	}
 
 	private int GetCurrentSpeed(){
